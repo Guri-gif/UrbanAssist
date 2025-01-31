@@ -1,3 +1,5 @@
+import TypewWritter from "./TypewWritter";
+
 const Navbar = () => {
   return (
     <>
@@ -10,10 +12,12 @@ const Navbar = () => {
               alt=""
             />
             <div className="flex-col items-center gap-0">
+              <div></div>
             <h1 className="mb-0 leading-tight">Urban</h1> 
             <h1 className="mb-0 leading-tight">Assist</h1>
             </div>
           </div>
+          <TypewWritter></TypewWritter>
         </div>
       </nav>
     </>
