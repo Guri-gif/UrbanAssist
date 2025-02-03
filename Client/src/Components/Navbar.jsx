@@ -1,4 +1,6 @@
 import TypewWritter from "./TypewWritter";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignature } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   return (
@@ -23,21 +25,30 @@ const Navbar = () => {
         </div>
         <div>
           <input
-            className="border rounded-full border-gray-200 active:border-gray-200 shadow-2xs p-1 h-[40px] w-[250px] text-center"
+            className="border rounded-full border-gray-200 text-gray-400 active:border-gray-200 shadow-2xs p-1 h-[40px] w-[250px] text-center"
             type="text"
             name=""
             id=""
-            placeholder="📍Enter Your Location"
+            placeholder="Enter Your Location"
           />
         </div>
         <div>
           <input
-            className="border rounded-full border-gray-200 active:border-gray-200 shadow-2xs p-1 h-[40px] w-[250px] text-center"
+            className="border rounded-full border-gray-200 text-gray-400 active:border-gray-200 shadow-2xs p-1 h-[40px] w-[250px] text-center"
             type="text"
             name=""
             id=""
             placeholder="What You are looking for?"
           />
+        </div>
+        <div>
+          <a href="" title="Sign In/Sign Up">
+            {" "}
+            <FontAwesomeIcon
+              icon={faSignature}
+              style={{ color: "#000000", fontSize: "24px" }}
+            />
+          </a>
         </div>
       </nav>
     </>
