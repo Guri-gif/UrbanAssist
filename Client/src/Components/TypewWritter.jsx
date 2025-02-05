@@ -11,7 +11,7 @@ const TypewWritter = ({ words }) => {
           loop: true,
           delay: 70,
           deleteSpeed: 60,
-          cursor: "",
+          cursor: "|",
           pauseFor: 150,
           startDelay: 500,
         }}
