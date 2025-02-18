@@ -6,24 +6,26 @@ import { useState } from "react";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
 
   const showLogin = () => {
     setToggle(!toggle);
+    setIsSignUp(false); // Reset to login when opening
   };
 
   const hideSidemenu = () => {
     setToggle(false);
+    setIsSignUp(false); // Reset mode when closing
   };
 
   const handleMenuClick = (e) => {
-    e.stopPropagation(); // Prevents closing when clicking inside
+    e.stopPropagation();
   };
 
   return (
     <>
-      {/* Black overlay */}
       <div
-        className={`absolute top-0 left-0 w-screen h-screen bg-black opacity-30 transition-opacity duration-700 z-10${
+        className={`absolute top-0 left-0 w-screen h-screen bg-black opacity-30 transition-opacity duration-700 z-10 ${
           toggle ? "opacity-50 visible" : "opacity-0 invisible"
         }`}
         onClick={hideSidemenu}
@@ -31,11 +33,50 @@ const Navbar = () => {
 
       {/* Side menu */}
       <div
-        className={`fixed top-[100px] left-0 w-[35vw] h-[65vh] bg-gray-200 shadow-2xl transition-transform duration-300 z-20 ${
-          toggle ? "translate-x-125" : "-translate-x-full"
+        className={`fixed top-[100px] left-0 w-[35vw] h-[70vh] bg-gray-200 shadow-2xl transition-transform duration-300 z-20 ${
+          toggle ? "translate-x-130" : "-translate-x-full"
         }`}
         onClick={handleMenuClick}
-      ></div>
+      >
+        <div className="flex justify-center items-center w-full h-full flex-col relative gap-[20px]">
+          <img
+            className="w-[70px] h-[70px] rounded-lg "
+            src="src/assets/logo.png"
+            alt=""
+          />
+          <form action="" className="flex flex-col gap-5">
+            {isSignUp && (
+              <input
+                type="text"
+                placeholder="Enter Your Name"
+                className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
+              />
+            )}
+            <input
+              type="email"
+              placeholder="Enter Your Email"
+              className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
+            />
+            <input
+              type="password"
+              placeholder="Enter Your Password"
+              className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
+            />
+            <button className="bg-black text-white w-[300px] px-4 py-2 rounded-lg hover:scale-[1.04] duration-700 cursor-pointer">
+              {isSignUp ? "Sign Up" : "Sign In"}
+            </button>
+          </form>
+          <p>
+            {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+            <span
+              className="text-gray-400 cursor-pointer hover:underline duration-[2s]"
+              onClick={() => setIsSignUp(!isSignUp)}
+            >
+              {isSignUp ? "Sign In" : "Sign Up"}
+            </span>
+          </p>
+        </div>
+      </div>
 
       {/* Navbar */}
       <nav className="bg-white shadow-sm w-full h-[10vh] flex justify-evenly items-center fixed top-0 z-0">
@@ -77,16 +118,22 @@ const Navbar = () => {
             className="fixed right-10 top-[24px]"
             onClick={showLogin}
           >
-            <FontAwesomeIcon
-              icon={faSignature}
-              style={{ color: "#000000", fontSize: "24px", cursor: "pointer"}}
-            />
-            <IoMdCloseCircleOutline
-              className={` cursor-pointer text-9xl${
-                toggle ? "opacity-100 visible" : "opacity-0 invisible"
-              }`}
-              onClick={hideSidemenu}
-            />
+            {!toggle && (
+              <FontAwesomeIcon
+                icon={faSignature}
+                style={{
+                  color: "#000000",
+                  fontSize: "24px",
+                  cursor: "pointer",
+                }}
+              />
+            )}
+            {toggle && (
+              <IoMdCloseCircleOutline
+                className="w-8 h-8 text-black"
+                onClick={hideSidemenu}
+              />
+            )}
           </button>
         </div>
       </nav>
