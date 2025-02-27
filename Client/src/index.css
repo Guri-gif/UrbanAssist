@@ -5,4 +5,12 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    overflow-x: hidden;
   }
+
+  .frame1:hover video{
+    transform: scale(1.02);
+    transition: 300ms;
+  }
+
+  

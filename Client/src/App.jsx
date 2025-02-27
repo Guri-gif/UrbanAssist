@@ -1,5 +1,7 @@
-import Navbar from "./Components/Navbar";
 import Lenis from "lenis";
+import Mainpage from "./Pages/Mainpage";
+import { BrowserRouter, Route, Routes } from "react-router";
+import Painting from "./Pages/Painting";
 
 function App() {
   const lenis = new Lenis();
@@ -14,7 +16,12 @@ function App() {
 
   return (
     <>
-      <Navbar></Navbar>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Mainpage />} />
+          <Route path="/painting" element={<Painting />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
