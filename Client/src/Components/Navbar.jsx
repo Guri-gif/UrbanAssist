@@ -39,7 +39,7 @@ const Navbar = () => {
 
       {/* Side menu */}
       <div
-        className={`fixed top-[100px] left-0 w-[35vw] h-[70vh] bg-gray-200 shadow-2xl transition-transform duration-[700ms] z-20 ${
+        className={`fixed top-[100px] left-0 w-[35vw] h-[70vh] bg-gray-200 shadow-2xl rounded-xl transition-transform duration-[700ms] z-20 ${
           toggle ? "translate-x-130" : "-translate-x-full"
         }`}
         onClick={handleMenuClick}
