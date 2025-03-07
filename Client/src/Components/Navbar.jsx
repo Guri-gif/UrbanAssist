@@ -4,10 +4,14 @@ import { faSignature } from "@fortawesome/free-solid-svg-icons";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
+import axios from "axios";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const showLogin = () => {
     setToggle(!toggle);
@@ -23,9 +27,21 @@ const Navbar = () => {
     e.stopPropagation();
   };
 
-  const handleDefault = (e) => {
+  const handleDefault = async (e) => {
     e.preventDefault();
-    console.log("Form submited successfullly");
+
+    try {
+      const url = isSignUp
+        ? "http://localhost:5000/api/auth/register"
+        : "http://localhost:5000/api/auth/login";
+
+      const response = await axios.post(url, { email, password });
+      setIsAuthenticated(true);
+
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.log("Error:", error.response?.data || error.message);
+    }
   };
 
   return (
@@ -62,11 +78,15 @@ const Navbar = () => {
               type="mail"
               placeholder="Enter Your Email"
               className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"
               placeholder="Enter Your Password"
               className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <button
               onClick={handleDefault}
@@ -130,26 +150,33 @@ const Navbar = () => {
             placeholder="What are you looking for?"
           />
 
-          {/* Login Button */}
+          {/* Avatar / Sign In Button */}
           <button
             title="Sign In/Sign Up"
             className="fixed right-10 top-[24px]"
             onClick={showLogin}
           >
-            {!toggle && (
-              <FontAwesomeIcon
-                icon={faSignature}
-                style={{
-                  color: "#000000",
-                  fontSize: "24px",
-                  cursor: "pointer",
-                }}
-              />
-            )}
-            {toggle && (
-              <IoMdCloseCircleOutline
-                className="w-8 h-8 text-black"
-                onClick={hideSidemenu}
+            {!isAuthenticated ? (
+              !toggle ? (
+                <FontAwesomeIcon
+                  icon={faSignature}
+                  style={{
+                    color: "#000000",
+                    fontSize: "24px",
+                    cursor: "pointer",
+                  }}
+                />
+              ) : (
+                <IoMdCloseCircleOutline
+                  className="w-8 h-8 text-black"
+                  onClick={hideSidemenu}
+                />
+              )
+            ) : (
+              <img
+                src="src/assets/user.png"
+                alt="User Avatar"
+                className="w-8 h-8 rounded-full cursor-pointer"
               />
             )}
           </button>

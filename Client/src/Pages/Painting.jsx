@@ -7,8 +7,8 @@ const Painting = () => {
   return (
     <>
       <Navbar />
-      <div className="w-auto h-[500px] flex gap-[50px] mx-[100px] mt-[20vh]">
-        <div className="w-[25%] h-auto flex flex-col gap-[20px]">
+      <div className="w-auto h-[500px] flex gap-[50px] mx-[100px] my-[20vh] z-0">
+        <div className="w-[25%] h- flex flex-col gap-[20px]">
           <h1 className="text-3xl font-semibold w-[150px]">
             Painting & Waterproofing
           </h1>
@@ -19,7 +19,17 @@ const Painting = () => {
             <Promise text="Transparent Pricing" />
           </PromiseBlock>
         </div>
-        <div className="w-[75%] h-auto"></div>
+        <div className="w-[75%] h-auto flex">
+          <img className="w-[50%] h-fit" src="src/assets/painter1.jpg" alt="" />
+          <img className="w-[50%] h-fit" src="src/assets/painter2.jpg" alt="" />
+        </div>
+      </div>
+      <div className="w-[400px] h-auto p-[30px] my-[250px] mx-[600px]">
+          <h1>At-home consultation</h1>
+          <div className="flex gap-2">
+            <p className="font-light">40rs</p>
+            <p className="font-light">60mins</p>
+          </div>
       </div>
     </>
   );

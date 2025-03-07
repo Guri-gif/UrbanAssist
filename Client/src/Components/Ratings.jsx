@@ -9,13 +9,13 @@ function Ratings({ img, name, rating }) {
         <p className="font-light text-gray-400">{name}</p>
       </div>
     </div>
-  )
+  );
 }
 
 Ratings.propTypes = {
   img: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  rating: PropTypes.number.isRequired,
-}
+  rating: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};
 
-export default Ratings
+export default Ratings;
