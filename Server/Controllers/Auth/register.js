@@ -2,7 +2,7 @@ const User = require("../../Models/user_model");
 const Joi = require("joi");
 
 const registrationValidation = Joi.object({
-  username: Joi.string().optional(),
+  username: Joi.string().when("$isSignUp", { is: true, then: Joi.required() }),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
 });

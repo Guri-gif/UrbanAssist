@@ -13,4 +13,28 @@ body {
     transition: 300ms;
   }
 
+  /* Default hidden scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Scrollbar track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+}
+
+/* Show scrollbar on hover */
+body:hover ::-webkit-scrollbar {
+  opacity: 1;
+}
+
+
   

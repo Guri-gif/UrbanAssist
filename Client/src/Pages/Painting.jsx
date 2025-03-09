@@ -8,7 +8,7 @@ const Painting = () => {
     <>
       <Navbar />
       <div className="w-auto h-[500px] flex gap-[50px] mx-[100px] my-[20vh] z-0">
-        <div className="w-[25%] h- flex flex-col gap-[20px]">
+        <div className="w-[25%] h-screen flex flex-col gap-[20px]">
           <h1 className="text-3xl font-semibold w-[150px]">
             Painting & Waterproofing
           </h1>

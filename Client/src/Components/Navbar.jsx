@@ -1,10 +1,12 @@
-import TypewWritter from "./TypewWritter";
+import { useState } from "react";
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignature } from "@fortawesome/free-solid-svg-icons";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
-import { useState } from "react";
-import axios from "axios";
+import { NavLink } from "react-router-dom";
+import TypewWritter from "./TypewWritter";
+import { ToastContainer, toast } from "react-toastify";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
@@ -12,15 +14,18 @@ const Navbar = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [username, setUsername] = useState("");
 
   const showLogin = () => {
     setToggle(!toggle);
-    setIsSignUp(false); // Reset to login when opening
+    setIsSignUp(false);
   };
 
   const hideSidemenu = () => {
     setToggle(false);
-    setIsSignUp(false); // Reset mode when closing
+    setIsSignUp(false);
   };
 
   const handleMenuClick = (e) => {
@@ -35,12 +40,18 @@ const Navbar = () => {
         ? "http://localhost:5000/api/auth/register"
         : "http://localhost:5000/api/auth/login";
 
-      const response = await axios.post(url, { email, password });
-      setIsAuthenticated(true);
+      const payload = isSignUp
+        ? { username, email, password }
+        : { email, password };
 
-      console.log("Response:", response.data);
+      const response = await axios.post(url, payload);
+      setIsAuthenticated(true);
+      setUser(response.data.user || response.data);
+      hideSidemenu(); // Hide menu after successful login
+      toast.success("Login Successful!"); // Show notification
     } catch (error) {
       console.log("Error:", error.response?.data || error.message);
+      toast.error("Login Failed!");
     }
   };
 
@@ -53,7 +64,7 @@ const Navbar = () => {
         onClick={hideSidemenu}
       ></div>
 
-      {/* Side menu */}
+      {/* Side Menu */}
       <div
         className={`fixed top-[100px] left-0 w-[35vw] h-[70vh] bg-gray-200 shadow-2xl rounded-xl transition-transform duration-[700ms] z-20 ${
           toggle ? "translate-x-130" : "-translate-x-full"
@@ -72,10 +83,12 @@ const Navbar = () => {
                 type="text"
                 placeholder="Enter Your Name"
                 className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             )}
             <input
-              type="mail"
+              type="email"
               placeholder="Enter Your Email"
               className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
               value={email}
@@ -121,11 +134,14 @@ const Navbar = () => {
         <div className="bg-white w-[70vw] h-[10vh] flex justify-evenly items-center mx-[300px]">
           <div className="flex items-center h-full">
             <div className="flex items-center space-x-2">
-              <img
-                className="w-[40px] h-[40px] shadow-lg rounded-lg hover:cursor-pointer hover:scale-[1.05] duration-700"
-                src="src/assets/logo.png"
-                alt=""
-              />
+              <NavLink to={"/"}>
+                <img
+                  className="w-[40px] h-[40px] shadow-lg rounded-lg hover:cursor-pointer hover:scale-[1.05] duration-700"
+                  src="src/assets/logo.png"
+                  alt=""
+                />
+              </NavLink>
+
               <div className="flex-col items-center gap-0">
                 <h1 className="mb-0 leading-tight">Urban</h1>
                 <h1 className="mb-0 leading-tight">Assist</h1>
@@ -151,35 +167,66 @@ const Navbar = () => {
           />
 
           {/* Avatar / Sign In Button */}
-          <button
-            title="Sign In/Sign Up"
-            className="fixed right-10 top-[24px]"
-            onClick={showLogin}
-          >
-            {!isAuthenticated ? (
-              !toggle ? (
-                <FontAwesomeIcon
-                  icon={faSignature}
-                  style={{
-                    color: "#000000",
-                    fontSize: "24px",
-                    cursor: "pointer",
-                  }}
-                />
+          <div className="relative">
+            <button
+              title={
+                isAuthenticated
+                  ? "Hello, " + user?.username
+                  : "Sign In / Sign Up"
+              }
+              className="fixed right-10 top-[24px]"
+              onClick={() => {
+                if (isAuthenticated) {
+                  setShowDropdown(!showDropdown);
+                } else {
+                  showLogin();
+                }
+              }}
+            >
+              {!isAuthenticated ? (
+                !toggle ? (
+                  <FontAwesomeIcon
+                    icon={faSignature}
+                    style={{
+                      color: "#000000",
+                      fontSize: "24px",
+                      cursor: "pointer",
+                    }}
+                  />
+                ) : (
+                  <IoMdCloseCircleOutline
+                    className="w-8 h-8 text-black"
+                    onClick={hideSidemenu}
+                  />
+                )
               ) : (
-                <IoMdCloseCircleOutline
-                  className="w-8 h-8 text-black"
-                  onClick={hideSidemenu}
+                <img
+                  src="src/assets/user.png"
+                  alt="User Avatar"
+                  className="w-8 h-8 rounded-full cursor-pointer"
                 />
-              )
-            ) : (
-              <img
-                src="src/assets/user.png"
-                alt="User Avatar"
-                className="w-8 h-8 rounded-full cursor-pointer"
-              />
+              )}
+              <ToastContainer />
+            </button>
+
+            {/* User Dropdown */}
+            {showDropdown && isAuthenticated && (
+              <div className="absolute top-[20vh] left-0 bg-white shadow-lg rounded-lg p-4 w-[200px]">
+                <p className="text-black font-semibold">{user?.username}</p>
+                <p className="text-gray-500 text-sm">{user?.email}</p>
+                <button
+                  className="text-red-500 mt-2"
+                  onClick={() => {
+                    setIsAuthenticated(false);
+                    setUser(null);
+                    setShowDropdown(false);
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
             )}
-          </button>
+          </div>
         </div>
       </nav>
     </>
