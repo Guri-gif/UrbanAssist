@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignature } from "@fortawesome/free-solid-svg-icons";
+import { faSignature, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import { NavLink } from "react-router-dom";
@@ -34,33 +34,50 @@ const Navbar = () => {
 
   const handleDefault = async (e) => {
     e.preventDefault();
-
+  
     try {
       const url = isSignUp
         ? "http://localhost:5000/api/auth/register"
         : "http://localhost:5000/api/auth/login";
-
+  
       const payload = isSignUp
         ? { username, email, password }
         : { email, password };
-
+  
       const response = await axios.post(url, payload);
       setIsAuthenticated(true);
       console.log("Response:", response);
       setUser(response.data.user);
+      setEmail(response.data.user?.email || email);
+      setUsername(response.data.user?.username || username);
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user || response.data)
       );
-      localStorage.setItem("username", response.config.user?.username);
+      localStorage.setItem("username", response.data.user?.username || username);
       localStorage.setItem("isAuthenticated", "true");
-      hideSidemenu(); // Hide menu after successful login
-      toast.success("Login Successful!"); // Show notification
+      hideSidemenu();
+      
+      if (isSignUp) {
+        toast.success("Account created successfully! Welcome " + username + "!", {
+          style: { color: "Green" },
+          progressStyle: { background: "yellow" },
+        });
+      } else {
+        toast.success("Welcome back " + username + "!", {
+          style: { color: "Green" },
+          progressStyle: { background: "yellow" },
+        });
+      }
     } catch (error) {
       console.log("Error:", error.response?.data || error.message);
-      toast.error("Login Failed!");
+      toast.error(isSignUp ? "Registration Failed!" : "Login Failed!", {
+        style: { color: "red" },
+        progressStyle: { background: "red" },
+      });
     }
   };
+  
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -69,10 +86,36 @@ const Navbar = () => {
 
     if (storedUser && storedAuth === "true") {
       setUser(JSON.parse(storedUser));
-      setUsername(storedUsername || "User"); // Set username
+      setUsername(storedUsername || "User");
       setIsAuthenticated(true);
     }
   }, []);
+
+  const deleteAccount = async () => {
+    if(!user || !user._id){
+      toast.error("User not found!");
+      return;
+    }
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/api/auth/deleteUser/${user._id}`
+      );
+      if (response.data.success) {
+        toast.success("Account deleted successfully!",{
+          style: { color: "red" },
+        });
+        localStorage.removeItem("user");
+        localStorage.removeItem("isAuthenticated");
+        localStorage.removeItem("username");
+        setShowDropdown(false);
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
+      toast.error("Failed to delete account!");
+    }
+  };
 
   return (
     <>
@@ -229,12 +272,10 @@ const Navbar = () => {
             {/* User Dropdown */}
             {showDropdown && isAuthenticated && (
               <div className="absolute top-[6vh] float-right bg-white shadow-lg rounded-lg p-4 w-[200px]">
-                <p className="text-black font-semibold">
-                  {user?.username}
-                </p>
-                <p className="text-gray-500 text-sm">{user?.email}</p>
+                <p className="text-black font-semibold">{username}</p>
+                <p className="text-gray-500 text-sm">{email}</p>
                 <button
-                  className="text-red-500 mt-2"
+                  className="text-red-500 mt-2 cursor-pointer"
                   onClick={() => {
                     setIsAuthenticated(false);
                     setUser(null);
@@ -243,13 +284,23 @@ const Navbar = () => {
                     localStorage.removeItem("user");
                     localStorage.removeItem("isAuthenticated");
 
-                    toast.success("Logout", {
-                      style: { color: "red" },
+                    toast.success(`Bye ${username} come back soon`, {
+                      style: { color: "white",
+                        background: "red"
+                       },
                       progressStyle: { background: "red" },
                     });
                   }}
                 >
                   Logout
+                </button>
+                <br />
+                <button
+                  onClick={() => deleteAccount()}
+                  className="text-red-500 cursor-pointer mt-2"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                  Delete Account
                 </button>
               </div>
             )}

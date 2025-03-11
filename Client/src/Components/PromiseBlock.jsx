@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 const PromiseBlock = ({ children }) => {
   return (
-    <section className="w-full h-auto border border-gray-400 rounded-2xl flex gap-[20px] p-[20px] sticky top-[10vh]">
+    <section className="w-full border border-gray-400 rounded-2xl flex gap-[20px] p-[20px]">
       <div className="w-[80%] h-auto flex flex-col gap-[20px]">
         <h1>UA Promises</h1>
         {children}

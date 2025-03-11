@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 function Review({ img, review }) {
   return (
     <section className="w-full h-[30px] flex gap-[10px] items-center">
-      <img className="h-full" src={img} alt="" />
+      <img className="h-full" src={img} alt="" loading="lazy"/>
       <p className="font-light">{String(review)}</p>
     </section>
   );
