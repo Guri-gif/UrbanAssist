@@ -46,11 +46,13 @@ const Navbar = () => {
 
       const response = await axios.post(url, payload);
       setIsAuthenticated(true);
-      setUser(response.data.user || response.data);
+      console.log("Response:", response);
+      setUser(response.data.user);
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user || response.data)
       );
+      localStorage.setItem("username", response.config.user?.username);
       localStorage.setItem("isAuthenticated", "true");
       hideSidemenu(); // Hide menu after successful login
       toast.success("Login Successful!"); // Show notification
@@ -63,9 +65,11 @@ const Navbar = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedAuth = localStorage.getItem("isAuthenticated");
+    const storedUsername = localStorage.getItem("username");
 
     if (storedUser && storedAuth === "true") {
       setUser(JSON.parse(storedUser));
+      setUsername(storedUsername || "User"); // Set username
       setIsAuthenticated(true);
     }
   }, []);
@@ -184,7 +188,9 @@ const Navbar = () => {
           {/* Avatar / Sign In Button */}
           <div className="relative">
             <button
-              title={isAuthenticated ? "Hello User" : "Sign In / Sign Up"}
+              title={
+                isAuthenticated ? `Hello ,${username}` : "Sign In / Sign Up"
+              }
               className="fixed right-10 top-[24px]"
               onClick={() => {
                 if (isAuthenticated) {
@@ -223,7 +229,9 @@ const Navbar = () => {
             {/* User Dropdown */}
             {showDropdown && isAuthenticated && (
               <div className="absolute top-[6vh] float-right bg-white shadow-lg rounded-lg p-4 w-[200px]">
-                <p className="text-black font-semibold">{user?.username}</p>
+                <p className="text-black font-semibold">
+                  {user?.username}
+                </p>
                 <p className="text-gray-500 text-sm">{user?.email}</p>
                 <button
                   className="text-red-500 mt-2"
@@ -236,7 +244,6 @@ const Navbar = () => {
                     localStorage.removeItem("isAuthenticated");
 
                     toast.success("Logout", {
-                      icon: "✔️", // Custom tick icon
                       style: { color: "red" },
                       progressStyle: { background: "red" },
                     });
