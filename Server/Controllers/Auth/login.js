@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials!" });
     }
 
-    res.json({ success: true, message: "Login successful!" });
+    res.json({ success: true, message: "Login successful!",user});
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }
