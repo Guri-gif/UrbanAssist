@@ -24,13 +24,13 @@ const Painting = () => {
           <img className="w-[50%] h-fit" src="src/assets/painter2.jpg" alt="" />
         </div>
       </div>
-      <div className="w-[400px] h-auto p-[30px] my-[250px] mx-[600px]">
+      {/* <div className="w-[400px] h-auto p-[30px] my-[250px] mx-[600px]">
           <h1>At-home consultation</h1>
           <div className="flex gap-2">
             <p className="font-light">40rs</p>
             <p className="font-light">60mins</p>
           </div>
-      </div>
+      </div> */}
     </>
   );
 };
