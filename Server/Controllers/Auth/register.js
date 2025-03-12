@@ -8,8 +8,6 @@ const registrationValidation = Joi.object({
 });
 
 module.exports = async (req, res) => {
-  const { error } = registrationValidation.validate(req.body);
-  if (error) return res.status(400).json({ message: error.details[0].message });
 
   try {
     const existingUser = await User.findOne({ email: req.body.email });

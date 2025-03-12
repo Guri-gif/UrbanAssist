@@ -34,50 +34,48 @@ const Navbar = () => {
 
   const handleDefault = async (e) => {
     e.preventDefault();
-  
+
     try {
       const url = isSignUp
         ? "http://localhost:5000/api/auth/register"
         : "http://localhost:5000/api/auth/login";
-  
+
       const payload = isSignUp
         ? { username, email, password }
         : { email, password };
-  
+
       const response = await axios.post(url, payload);
-      setIsAuthenticated(true);
-      console.log("Response:", response);
-      setUser(response.data.user);
-      setEmail(response.data.user?.email || email);
-      setUsername(response.data.user?.username || username);
-      localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user || response.data)
-      );
-      localStorage.setItem("username", response.data.user?.username || username);
-      localStorage.setItem("isAuthenticated", "true");
-      hideSidemenu();
-      
-      if (isSignUp) {
-        toast.success("Account created successfully! Welcome " + username + "!", {
-          style: { color: "Green" },
-          progressStyle: { background: "yellow" },
-        });
-      } else {
-        toast.success("Welcome back " + username + "!", {
-          style: { color: "Green" },
-          progressStyle: { background: "yellow" },
-        });
+      console.log("API Response:", response.data);
+
+      const userData =
+        response.data.data || response.data.user || response.data;
+
+      if (!userData || !userData._id) {
+        throw new Error("Invalid user data received!");
       }
+
+      setIsAuthenticated(true);
+      setUser(userData);
+      setEmail(userData.email);
+      setUsername(userData.username);
+
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("username", userData.username);
+      localStorage.setItem("isAuthenticated", "true");
+
+      setShowDropdown(false);
+      hideSidemenu();
+
+      toast.success(
+        isSignUp
+          ? `Welcome ${userData.username}!`
+          : `Welcome back ${userData.username}!`
+      );
     } catch (error) {
-      console.log("Error:", error.response?.data || error.message);
-      toast.error(isSignUp ? "Registration Failed!" : "Login Failed!", {
-        style: { color: "red" },
-        progressStyle: { background: "red" },
-      });
+      console.error("Error:", error.response?.data || error.message);
+      toast.error(isSignUp ? "Registration Failed!" : "Login Failed!");
     }
   };
-  
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -92,7 +90,7 @@ const Navbar = () => {
   }, []);
 
   const deleteAccount = async () => {
-    if(!user || !user._id){
+    if (!user || !user._id) {
       toast.error("User not found!");
       return;
     }
@@ -101,7 +99,7 @@ const Navbar = () => {
         `http://localhost:5000/api/auth/deleteUser/${user._id}`
       );
       if (response.data.success) {
-        toast.success("Account deleted successfully!",{
+        toast.success("Account deleted successfully!", {
           style: { color: "red" },
         });
         localStorage.removeItem("user");
@@ -285,9 +283,7 @@ const Navbar = () => {
                     localStorage.removeItem("isAuthenticated");
 
                     toast.success(`Bye ${username} come back soon`, {
-                      style: { color: "white",
-                        background: "red"
-                       },
+                      style: { color: "white", background: "red" },
                       progressStyle: { background: "red" },
                     });
                   }}
