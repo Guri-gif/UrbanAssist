@@ -7,6 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { NavLink } from "react-router-dom";
 import TypewWritter from "./TypewWritter";
 import { ToastContainer, toast } from "react-toastify";
+import Loading from "./Loading";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
@@ -17,6 +18,7 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const showLogin = () => {
     setToggle(!toggle);
@@ -34,6 +36,7 @@ const Navbar = () => {
 
   const handleDefault = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
 
     try {
       const url = isSignUp
@@ -46,6 +49,8 @@ const Navbar = () => {
 
       const response = await axios.post(url, payload);
       console.log("API Response:", response.data);
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const userData =
         response.data.data || response.data.user || response.data;
@@ -65,7 +70,6 @@ const Navbar = () => {
 
       setShowDropdown(false);
       hideSidemenu();
-
       toast.success(
         isSignUp
           ? `Welcome ${userData.username}!`
@@ -74,6 +78,8 @@ const Navbar = () => {
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
       toast.error(isSignUp ? "Registration Failed!" : "Login Failed!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,7 +106,7 @@ const Navbar = () => {
       );
       if (response.data.success) {
         toast.success("Account deleted successfully!", {
-          style: { color: "red" },
+          style: { color: "green" },
         });
         localStorage.removeItem("user");
         localStorage.removeItem("isAuthenticated");
@@ -137,37 +143,41 @@ const Navbar = () => {
             src="src/assets/logo.png"
             alt=""
           />
-          <form action="" className="flex flex-col gap-5">
-            {isSignUp && (
+          {loading ? (
+            <Loading />
+          ) : (
+            <form action="" className="flex flex-col gap-5">
+              {isSignUp && (
+                <input
+                  type="text"
+                  placeholder="Enter Your Name"
+                  className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              )}
               <input
-                type="text"
-                placeholder="Enter Your Name"
+                type="email"
+                placeholder="Enter Your Email"
                 className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-            )}
-            <input
-              type="email"
-              placeholder="Enter Your Email"
-              className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Enter Your Password"
-              className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button
-              onClick={handleDefault}
-              className="bg-black text-white w-[300px] px-4 py-2 rounded-lg hover:scale-[1.04] duration-700 cursor-pointer"
-            >
-              {isSignUp ? "Sign Up" : "Sign In"}
-            </button>
-          </form>
+              <input
+                type="password"
+                placeholder="Enter Your Password"
+                className="border-2 border-gray-400 rounded-lg py-2 px-4 w-[300px]"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                onClick={handleDefault}
+                className="bg-black text-white w-[300px] px-4 py-2 rounded-lg hover:scale-[1.04] duration-700 cursor-pointer"
+              >
+                {isSignUp ? "Sign Up" : "Sign In"}
+              </button>
+            </form>
+          )}
           <p>
             {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
             <span
@@ -283,7 +293,7 @@ const Navbar = () => {
                     localStorage.removeItem("isAuthenticated");
 
                     toast.success(`Bye ${username} come back soon`, {
-                      style: { color: "white", background: "red" },
+                      style: { color: "black", background: "white" },
                       progressStyle: { background: "red" },
                     });
                   }}

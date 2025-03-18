@@ -1,29 +1,33 @@
 const User = require("../../Models/user_model");
-const Joi = require("joi");
+const { registrationValidation } = require("../../Services/registerValidation");
 
-const registrationValidation = Joi.object({
-  username: Joi.string().when("$isSignUp", { is: true, then: Joi.required() }),
-  email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
-});
-
-module.exports = async (req, res) => {
-
+const register = async (req, res) => {
   try {
-    const existingUser = await User.findOne({ email: req.body.email });
-    if (existingUser)
-      return res.status(400).json({ message: "User already registered!" });
+    const registerValues = await registrationValidation.validateAsync(req.body);
+    const { username, email, password } = registerValues;
 
-    const newUser = new User({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-    });
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({
+        message: "User already registered!",
+      });
+    }
+
+    const newUser = new User({ username, email, password });
 
     await newUser.save();
 
-    res.json({ success: true, message: "User registered successfully!" });
-  } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(201).json({
+      message: "User registered successfully!",
+      user: newUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
+
+module.exports = register;

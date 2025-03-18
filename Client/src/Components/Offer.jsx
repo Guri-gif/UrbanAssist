@@ -8,10 +8,10 @@ const Offer = ({ price }) => {
         <p className="font-light">
           <strike>{price}</strike>
         </p>
-        <p className="font-light">Get Your First Consultation free🎉</p>
+        <p className="font-light">Get Your First Consultation free</p>
       </div>
       <button className="bg-black border text-white w-[200px] rounded-lg py-2 cursor-pointer hover:scale-[1.01] duration-700">
-        Book Now!
+        Book Now!🎉
       </button>
     </div>
   );
