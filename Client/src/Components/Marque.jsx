@@ -8,7 +8,7 @@ import {
 
 import PropTypes from "prop-types";
 
-const Marque = ({ autoplay = true, pauseOnHover = true, reviews = [] }) => {
+const Marque = ({ autoplay = true, reviews = [] }) => {
   const [isScreenSizeSm, setIsScreenSizeSm] = useState(
     window.innerWidth <= 640
   );
@@ -75,29 +75,32 @@ const Marque = ({ autoplay = true, pauseOnHover = true, reviews = [] }) => {
     }
   };
 
-  const handleMouseEnter = () => {
-    if (autoplay && pauseOnHover) {
-      controls.stop();
-    }
-  };
-  const handleMouseLeave = () => {
-    if (autoplay && pauseOnHover) {
-      const currentAngle = rotation.get();
-      startInfiniteSpin(currentAngle);
-    }
-  };
+  // const handleMouseEnter = () => {
+  //   if (autoplay && pauseOnHover) {
+  //     controls.stop();
+  //   }
+  // };
+  // const handleMouseLeave = () => {
+  //   if (autoplay && pauseOnHover) {
+  //     const currentAngle = rotation.get();
+  //     startInfiniteSpin(currentAngle);
+  //   }
+  // };
 
   return (
-    <div className=" h-[400px] mx-[100px] w-[600px] overflow-hidden">
-      <h1 className="text-2xl">What Our Users Say – <br />Real Reviews, Real Trust!</h1>
-      <div className="flex h-full items-center justify-center [perspective:1000px] [transform-style:preserve-3d] shadow-2xl">
+    <div className="mx-auto max-w-3xl py-12">
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+        What Our Users Say
+        <br />
+        <span className="text-gray-500 text-lg">Real Reviews, Real Trust!</span>
+      </h1>
+
+      <div className="flex items-center justify-center h-[400px] overflow-hidden shadow-xl rounded-xl bg-gray-100">
         <motion.div
           drag="x"
-          dragElastic={0}
+          dragElastic={0.1}
           onDrag={handleDrag}
           onDragEnd={handleDragEnd}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
           animate={controls}
           onUpdate={handleUpdate}
           style={{
@@ -106,12 +109,12 @@ const Marque = ({ autoplay = true, pauseOnHover = true, reviews = [] }) => {
             width: cylinderWidth,
             transformStyle: "preserve-3d",
           }}
-          className="flex min-h-[200px] cursor-grab items-center justify-center [transform-style:preserve-3d]"
+          className="flex cursor-grab items-center justify-center [transform-style:preserve-3d]"
         >
           {reviews.map(({ username, userImage, review }, i) => (
             <div
               key={i}
-              className="group absolute flex h-fit items-center justify-center p-[8%] [backface-visibility:hidden] md:p-[6%]"
+              className="absolute flex h-fit items-center justify-center p-6 transition-transform"
               style={{
                 width: `${faceWidth}px`,
                 transform: `rotateY(${
@@ -119,13 +122,13 @@ const Marque = ({ autoplay = true, pauseOnHover = true, reviews = [] }) => {
                 }deg) translateZ(${radius}px)`,
               }}
             >
-              <div className="flex flex-col items-center text-white shadow-lg rounded-2xl bg-gray-400 border p-4">
+              <div className="flex flex-col items-center text-center text-white shadow-lg rounded-xl bg-gray-700 p-6 hover:scale-105 transition-all duration-500">
                 <img
                   src={userImage}
                   alt="user"
-                  className="h-16 w-16 rounded-full border-[3px] border-white object-cover mb-2"
+                  className="h-16 w-16 rounded-full border-4 border-white object-cover mb-3 shadow-md"
                 />
-                <p className="font-semibold">{username}</p>
+                <p className="font-semibold text-lg">{username}</p>
                 <p className="text-gray-300 text-sm italic">{review}</p>
               </div>
             </div>

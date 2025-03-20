@@ -3,11 +3,11 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignature, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { FcGoogle } from "react-icons/fc";
 import { NavLink } from "react-router-dom";
 import TypewWritter from "./TypewWritter";
 import { ToastContainer, toast } from "react-toastify";
 import Loading from "./Loading";
+import CustomButton from "./CustomButton";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
@@ -36,7 +36,7 @@ const Navbar = () => {
 
   const handleDefault = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true);
 
     try {
       const url = isSignUp
@@ -50,7 +50,7 @@ const Navbar = () => {
       const response = await axios.post(url, payload);
       console.log("API Response:", response.data);
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       const userData =
         response.data.data || response.data.user || response.data;
@@ -66,6 +66,7 @@ const Navbar = () => {
 
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("username", userData.username);
+      localStorage.setItem("email", userData.email);
       localStorage.setItem("isAuthenticated", "true");
 
       setShowDropdown(false);
@@ -87,10 +88,12 @@ const Navbar = () => {
     const storedUser = localStorage.getItem("user");
     const storedAuth = localStorage.getItem("isAuthenticated");
     const storedUsername = localStorage.getItem("username");
+    const storedEmail = localStorage.getItem("email");
 
     if (storedUser && storedAuth === "true") {
       setUser(JSON.parse(storedUser));
       setUsername(storedUsername || "User");
+      setEmail(storedEmail);
       setIsAuthenticated(true);
     }
   }, []);
@@ -124,7 +127,7 @@ const Navbar = () => {
   return (
     <>
       <div
-        className={`absolute top-0 left-0 w-screen h-screen bg-black opacity-30 transition-opacity duration-[900ms] z-10 ${
+        className={`absolute top-0 left-0 w-screen h-screen bg-black opacity-30 transition-opacity duration-[900ms] z-20 ${
           toggle ? "opacity-50 visible" : "opacity-0 invisible"
         }`}
         onClick={hideSidemenu}
@@ -190,17 +193,14 @@ const Navbar = () => {
           {!isSignUp && <p>OR</p>}
           <div>
             {!isSignUp && (
-              <div className="bg-black text-white w-[300px] px-4 py-2 rounded-lg hover:scale-[1.04] duration-700 cursor-pointer flex justify-evenly items-center">
-                <p>Sign In using Google</p>
-                <FcGoogle />
-              </div>
+              <CustomButton/>
             )}
           </div>
         </div>
       </div>
 
       {/* Navbar */}
-      <nav className="bg-white shadow-sm w-[100vw] h-[10vh] flex justify-evenly items-center fixed top-0 z-0">
+      <nav className="bg-white shadow-sm w-[100vw] h-[10vh] flex justify-evenly items-center fixed top-0 z-10">
         <div className="bg-white w-[70vw] h-[10vh] flex justify-evenly items-center mx-[300px]">
           <div className="flex items-center h-full">
             <div className="flex items-center space-x-2">

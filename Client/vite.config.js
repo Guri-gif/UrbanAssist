@@ -1,10 +1,31 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(),
-    tailwindcss(),
+  plugins: [
+    react(),
+    tailwindcss({
+      config: {
+        content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"], // Scans your files
+        theme: {
+          extend: {
+            translate: {
+              101: "101%",
+            },
+            keyframes: {
+              marquee: {
+                from: { transform: "translateX(0%)" },
+                to: { transform: "translateX(-50%)" },
+              },
+            },
+            animation: {
+              marquee: "marquee 15s linear infinite",
+            },
+          },
+        },
+        plugins: [],
+      },
+    }),
   ],
-})
+});

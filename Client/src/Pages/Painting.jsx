@@ -5,6 +5,8 @@ import Review from "../Components/Review";
 import Offer from "../Components/Offer";
 import Marque from "../Components/Marque";
 import WorkGallery from "../Components/WorkGallery";
+import FAQ from "../Components/FAQ";
+import Footer from "../Components/Footer";
 
 const Painting = () => {
   const reviews = [
@@ -23,20 +25,28 @@ const Painting = () => {
       userImage: "https://randomuser.me/api/portraits/men/3.jpg",
       review: "Great quality and support!",
     },
+  ];
+
+  const faqItems = [
     {
-      username: "Mike Johnson",
-      userImage: "https://randomuser.me/api/portraits/men/3.jpg",
-      review: "Great quality and support!",
+      question: "What type of paint should I use for my home interior?",
+      answer:
+        " Latex (water-based) paint is best for walls, while oil-based paint is better for trim and durability.",
     },
     {
-      username: "Mike Johnson",
-      userImage: "https://randomuser.me/api/portraits/men/3.jpg",
-      review: "Great quality and support!",
+      question: " How do I prepare a wall before painting?",
+      answer:
+        "Keep lids tightly closed, store in a cool place, and add a few drops of water for acrylics if drying.",
     },
     {
-      username: "Mike Johnson",
-      userImage: "https://randomuser.me/api/portraits/men/3.jpg",
-      review: "Great quality and support!",
+      question: "How many coats of paint do I need?",
+      answer:
+        "Usually 2 coats for even coverage, but dark colors may need more.",
+    },
+    {
+      question: "How do I avoid streaks when painting walls?",
+      answer:
+        'Use high-quality rollers, apply even pressure, and paint in "W" motions.',
     },
   ];
 
@@ -73,10 +83,21 @@ const Painting = () => {
           />
         </div>
       </div>
-      <div className="flex">
-        <Marque reviews={reviews} autoplay={true} pauseOnHover={true} />
-        <WorkGallery></WorkGallery>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 p-6">
+        <div className="w-full md:w-1/2">
+          <Marque reviews={reviews} autoplay={true} pauseOnHover={true} />
+        </div>
+        <div className="w-full md:w-1/2">
+          <WorkGallery />
+        </div>
       </div>
+      <div className="mt-10 p-6">
+        <h2 className="text-2xl font-semibold text-center">
+          Frequently Asked Questions
+        </h2>
+        <FAQ items={faqItems} />
+      </div>
+      <Footer />
     </>
   );
 };

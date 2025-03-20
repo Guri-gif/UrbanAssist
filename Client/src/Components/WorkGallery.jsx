@@ -106,7 +106,11 @@ const WorkGallery = ({
   };
 
   return (
-    <div className="relative h-[500px] w-full overflow-hidden">
+    <div className="relative h-[500px] w-full overflow-hidden py-8 bg-gray-100 rounded-xl shadow-lg">
+      <h2 className="text-3xl font-semibold text-gray-800 text-center">
+        Our Work Gallery
+      </h2>
+      <p className="text-center mt-6 text-gray-500 text-lg">Actions speaks more than words...</p>
 
       <div className="flex h-full items-center justify-center [perspective:1000px] [transform-style:preserve-3d]">
         <motion.div
@@ -129,7 +133,7 @@ const WorkGallery = ({
           {images.map((url, i) => (
             <div
               key={i}
-              className="group absolute flex h-fit items-center justify-center p-[8%] [backface-visibility:hidden] md:p-[6%]"
+              className="absolute flex h-fit items-center justify-center p-[6%] md:p-[4%] transition-transform"
               style={{
                 width: `${faceWidth}px`,
                 transform: `rotateY(${
@@ -140,9 +144,9 @@ const WorkGallery = ({
               <img
                 src={url}
                 alt="gallery"
-                className="pointer-events-none h-[120px] w-[300px] rounded-[15px] border-[3px] border-white object-cover
-                           transition-transform duration-300 ease-out group-hover:scale-105
-                           sm:h-[100px] sm:w-[220px]"
+                className="pointer-events-none h-[130px] w-[320px] rounded-2xl border-4 border-white object-cover 
+                       transition-transform duration-300 ease-out hover:scale-105 shadow-md
+                       sm:h-[100px] sm:w-[240px]"
               />
             </div>
           ))}

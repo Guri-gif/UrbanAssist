@@ -3,7 +3,6 @@ import Mainpage from "./Pages/Mainpage";
 import { BrowserRouter, Route, Routes } from "react-router";
 import Painting from "./Pages/Painting";
 import FuzzyText from "./Pages/FuzzyText";
-import Loading from "./Components/Loading";
 
 function App() {
   const lenis = new Lenis();
@@ -20,7 +19,6 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/loading" element={<Loading/>}/>
           <Route path="/" element={<Mainpage />} />
           <Route path="/painting" element={<Painting />} />
           <Route
