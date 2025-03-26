@@ -15,11 +15,23 @@ export default function HeaderSection() {
             What You looking for?
           </p>
           <div className="w-50% h-auto grid grid-cols-3 grid-rows-2 p-12 gap-10">
-            <Videos video="src/assets/makeup.mp4" title="Women Makeup" />
-            <Videos video="src/assets/grooming.mp4" title="Mens Grooming" />
-            <Videos video="src/assets/repair.mp4" title="Appliance Repair" />
-            <Videos video="src/assets/cleaning.mp4" title="Cleaning" />
-            <Videos video="src/assets/basic.mp4" title="Handymen" />
+            <NavLink to="/makeup" end>
+              {" "}
+              <Videos video="src/assets/makeup.mp4" title="Women Makeup" />
+            </NavLink>
+            <NavLink to={"/grooming"}>
+              {" "}
+              <Videos video="src/assets/grooming.mp4" title="Mens Grooming" />
+            </NavLink>
+            <NavLink to={"/repairing"}>
+              <Videos video="src/assets/repair.mp4" title="Appliance Repair" />
+            </NavLink>
+            <NavLink to={"/cleaning"}>
+              <Videos video="src/assets/cleaning.mp4" title="Cleaning" />
+            </NavLink>
+            <NavLink to={"/handymen"}>
+              <Videos video="src/assets/basic.mp4" title="Handymen" />
+            </NavLink>
             <NavLink to="/painting" end>
               <Videos video="src/assets/paint.mp4" title="Painter" />
             </NavLink>

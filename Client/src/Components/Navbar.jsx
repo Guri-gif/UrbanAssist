@@ -19,6 +19,8 @@ const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
 
   const showLogin = () => {
     setToggle(!toggle);
@@ -124,6 +126,13 @@ const Navbar = () => {
     }
   };
 
+  const fetchLocations = async (searchText) => {
+    if (searchText.length < 2) return;
+    const res = await axios.get(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${searchText}&limit=2`
+    );
+    setSuggestions(res.data);
+  };
   return (
     <>
       <div
@@ -191,11 +200,7 @@ const Navbar = () => {
             </span>
           </p>
           {!isSignUp && <p>OR</p>}
-          <div>
-            {!isSignUp && (
-              <CustomButton/>
-            )}
-          </div>
+          <div>{!isSignUp && <CustomButton />}</div>
         </div>
       </div>
 
@@ -225,11 +230,32 @@ const Navbar = () => {
           </div>
 
           {/* Search Inputs */}
-          <input
-            className="border rounded-full border-gray-200 text-gray-400 focus:outline-gray-400 shadow-sm p-1 h-[40px] w-[250px] text-center"
-            type="text"
-            placeholder="Enter Your Location📍"
-          />
+          <div>
+            <input
+              className="border rounded-full text-gray-400 shadow-sm p-1 h-[40px] w-[250px] text-center"
+              type="text"
+              placeholder="Enter Your Location📍"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                fetchLocations(e.target.value);
+              }}
+            />
+            <ul className="absolute bg-white shadow-md w-[250px]">
+              {suggestions.map((place) => (
+                <li
+                  key={place.place_id}
+                  className="p-2 hover:bg-gray-200 cursor-pointer"
+                  onClick={() => {
+                    setQuery(place.display_name); 
+                    setSuggestions([]);
+                  }}
+                >
+                  {place.display_name}
+                </li>
+              ))}
+            </ul>
+          </div>
           <input
             className="border rounded-full shadow-sm border-gray-200 text-gray-400 p-1 h-[40px] w-[250px] text-center focus:outline-gray-400"
             type="text"
@@ -279,35 +305,41 @@ const Navbar = () => {
 
             {/* User Dropdown */}
             {showDropdown && isAuthenticated && (
-              <div className="absolute top-[6vh] float-right bg-white shadow-lg rounded-lg p-4 w-[200px]">
+              <div className="absolute top-[6vh] right-[-100] bg-white shadow-lg rounded-lg p-4 w-[200px]">
                 <p className="text-black font-semibold">{username}</p>
                 <p className="text-gray-500 text-sm">{email}</p>
-                <button
-                  className="text-red-500 mt-2 cursor-pointer"
-                  onClick={() => {
-                    setIsAuthenticated(false);
-                    setUser(null);
-                    setShowDropdown(false);
 
-                    localStorage.removeItem("user");
-                    localStorage.removeItem("isAuthenticated");
+                {/* Logout Button (Not inside another button) */}
+                <div className="mt-2">
+                  <button
+                    className="text-red-500 cursor-pointer"
+                    onClick={() => {
+                      setIsAuthenticated(false);
+                      setUser(null);
+                      setShowDropdown(false);
 
-                    toast.success(`Bye ${username} come back soon`, {
-                      style: { color: "black", background: "white" },
-                      progressStyle: { background: "red" },
-                    });
-                  }}
-                >
-                  Logout
-                </button>
-                <br />
-                <button
-                  onClick={() => deleteAccount()}
-                  className="text-red-500 cursor-pointer mt-2"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                  Delete Account
-                </button>
+                      localStorage.removeItem("user");
+                      localStorage.removeItem("isAuthenticated");
+
+                      toast.success(`Bye ${username}, come back soon`, {
+                        style: { color: "black", background: "white" },
+                        progressStyle: { background: "red" },
+                      });
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+
+                {/* Delete Account Button (Not inside another button) */}
+                <div className="mt-2">
+                  <button
+                    onClick={deleteAccount}
+                    className="text-red-500 cursor-pointer"
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> Delete Account
+                  </button>
+                </div>
               </div>
             )}
           </div>
