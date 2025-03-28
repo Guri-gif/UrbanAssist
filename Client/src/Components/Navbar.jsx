@@ -70,6 +70,7 @@ const Navbar = () => {
       localStorage.setItem("username", userData.username);
       localStorage.setItem("email", userData.email);
       localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("token", response.data.token);
 
       setShowDropdown(false);
       hideSidemenu();
@@ -105,9 +106,21 @@ const Navbar = () => {
       toast.error("User not found!");
       return;
     }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Token not found!");
+      return;
+    }
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/auth/deleteUser/${user._id}`
+        `http://localhost:5000/api/auth/deleteUser/${user._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (response.data.success) {
         toast.success("Account deleted successfully!", {
@@ -116,20 +129,22 @@ const Navbar = () => {
         localStorage.removeItem("user");
         localStorage.removeItem("isAuthenticated");
         localStorage.removeItem("username");
+        localStorage.removeItem("email");
+        localStorage.removeItem("token");
         setShowDropdown(false);
         setIsAuthenticated(false);
         setUser(null);
       }
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
-      toast.error("Failed to delete account!");
+      toast.error("Unauthorized! only for admin use");
     }
   };
 
   const fetchLocations = async (searchText) => {
     if (searchText.length < 2) return;
     const res = await axios.get(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${searchText}&limit=2`
+      `https://nominatim.openstreetmap.org/search?format=json&q=${searchText}&limit=4`
     );
     setSuggestions(res.data);
   };
@@ -219,7 +234,7 @@ const Navbar = () => {
 
               <div className="flex-col items-center gap-0">
                 <h1 className="mb-0 leading-tight">Urban</h1>
-                <h1 className="mb-0 leading-tight">Assist</h1>
+                <h1 className="mt-0 leading-tight">Assist</h1>
               </div>
             </div>
             <div className="w-44">
@@ -247,7 +262,7 @@ const Navbar = () => {
                   key={place.place_id}
                   className="p-2 hover:bg-gray-200 cursor-pointer"
                   onClick={() => {
-                    setQuery(place.display_name); 
+                    setQuery(place.display_name);
                     setSuggestions([]);
                   }}
                 >

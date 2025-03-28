@@ -46,7 +46,7 @@ function MenuItem({ question, answer }) {
 
   return (
     <div
-      className="relative overflow-hidden text-center shadow-lg rounded-lg bg-black text-white transition-transform duration-300 ease-out hover:shadow-2xl p-4"
+      className="relative overflow-hidden text-center rounded-lg bg-black text-white transition-transform duration-300 ease-out shadow-lg p-4"
       ref={itemRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

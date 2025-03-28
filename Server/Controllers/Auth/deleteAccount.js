@@ -1,12 +1,18 @@
 const User = require("../../Models/user_model");
 
-const deleteAccount = async (req, res, next) => {
+const deleteAccount = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const findUser = await User.findByIdAndDelete(id);
+    if (req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Access denied. Only admins can delete accounts." });
+    }
 
-    if (!findUser) {
+    const user = await User.findByIdAndDelete(id);
+
+    if (!user) {
       return res.status(404).json({ message: "User not found!" });
     }
 
