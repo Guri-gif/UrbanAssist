@@ -147,6 +147,7 @@ const Navbar = () => {
       `https://nominatim.openstreetmap.org/search?format=json&q=${searchText}&limit=4`
     );
     setSuggestions(res.data);
+    localStorage.setItem("Locations", JSON.stringify(res.data));
   };
   return (
     <>

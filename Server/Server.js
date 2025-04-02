@@ -8,7 +8,7 @@ const router = require("./Routes/api/Auth.route");
 
 backend.use(express.json());
 
-backend.use(cors({ origin: "http://localhost:5173" || "https://localhost:5174", credentials: true }));
+backend.use(cors({ origin: "*", credentials: true }));
 
 backend.use("/api/auth", router);
 

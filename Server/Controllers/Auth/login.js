@@ -23,11 +23,15 @@ const login = async (req, res, next) => {
       });
     }
 
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      config.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    const userInfo = {
+      id: user._id,
+      role: user.role,
+    };
+
+    const token = jwt.sign(userInfo, config.JWT_SECRET, { expiresIn: "1d" });
+
+    user.token = token;
+    await user.save();
 
     res.status(200).json({
       success: true,
