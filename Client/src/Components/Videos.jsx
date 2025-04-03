@@ -1,9 +1,32 @@
 import PropTypes from "prop-types";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { useRef } from "react";
 
 const Videos = ({ video, title }) => {
+  // GSAP animation for the video element
+
+  gsap.registerPlugin(useGSAP);
+  const videoRef = useRef(null);
+  useGSAP(() => {
+    gsap.fromTo(
+      videoRef.current,
+      {
+        scale: 0,
+        opacity: 0,
+      },
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 0.6,
+        ease: "power4.out",
+      }
+    );
+  }, []);
   return (
     <div>
       <video
+        ref={videoRef}
         muted
         loop
         autoPlay

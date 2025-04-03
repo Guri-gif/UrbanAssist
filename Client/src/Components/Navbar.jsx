@@ -8,6 +8,10 @@ import TypewWritter from "./TypewWritter";
 import { ToastContainer, toast } from "react-toastify";
 import Loading from "./Loading";
 import CustomButton from "./CustomButton";
+import instance from "../axiosInstance";
+import { apiURL } from "../config";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
@@ -42,14 +46,14 @@ const Navbar = () => {
 
     try {
       const url = isSignUp
-        ? "http://localhost:5000/api/auth/register"
-        : "http://localhost:5000/api/auth/login";
+        ? `${apiURL}/api/auth/register`
+        : `${apiURL}/api/auth/login`;
 
       const payload = isSignUp
         ? { username, email, password }
         : { email, password };
 
-      const response = await axios.post(url, payload);
+      const response = await instance.post(url, payload);
       console.log("API Response:", response.data);
 
       await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -149,6 +153,17 @@ const Navbar = () => {
     setSuggestions(res.data);
     localStorage.setItem("Locations", JSON.stringify(res.data));
   };
+
+  gsap.registerPlugin(useGSAP);
+
+  useGSAP(() => {
+    const navy = document.getElementById("navy");
+
+    gsap.from(navy, {
+      y: -100,
+      duration: 1,
+    });
+  });
   return (
     <>
       <div
@@ -221,7 +236,10 @@ const Navbar = () => {
       </div>
 
       {/* Navbar */}
-      <nav className="bg-white shadow-sm w-[100vw] h-[10vh] flex justify-evenly items-center fixed top-0 z-10">
+      <nav
+        id="navy"
+        className="bg-white shadow-sm w-[100vw] h-[10vh] flex justify-evenly items-center fixed top-0 z-10"
+      >
         <div className="bg-white w-[70vw] h-[10vh] flex justify-evenly items-center mx-[300px]">
           <div className="flex items-center h-full">
             <div className="flex items-center space-x-2">
