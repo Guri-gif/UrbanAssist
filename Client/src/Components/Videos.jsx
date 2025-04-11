@@ -8,8 +8,9 @@ const Videos = ({ video, title }) => {
 
   gsap.registerPlugin(useGSAP);
   const videoRef = useRef(null);
+  const tl = gsap.timeline();
   useGSAP(() => {
-    gsap.fromTo(
+    tl.fromTo(
       videoRef.current,
       {
         scale: 0,

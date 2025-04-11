@@ -28,7 +28,7 @@ const login = async (req, res, next) => {
       role: user.role,
     };
 
-    const token = jwt.sign(userInfo, config.JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign(userInfo, config.JWT_SECRET, { expiresIn: "1h" });
 
     user.token = token;
     await user.save();
