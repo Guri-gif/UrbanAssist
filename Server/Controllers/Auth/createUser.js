@@ -63,7 +63,9 @@ const createUser = async (req, res, next) => {
         _id: newUser._id,
       },
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 module.exports = createUser;

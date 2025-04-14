@@ -8,6 +8,7 @@ const userData = require("../../Controllers/Auth/userData");
 const adminLogin = require("../../Controllers/Auth/adminLogin");
 const verifyAdmin = require("../../Middleware/verifyAdmin");
 const createUser = require("../../Controllers/Auth/createUser");
+const createService = require("../../Controllers/Auth/createService");
 
 router.post("/register", register);
 router.post("/login", login);
@@ -20,5 +21,6 @@ router.delete(
 router.get("/userData", userData);
 router.post("/adminLogin", adminLogin);
 router.post("/createUser", verifyAdmin, createUser);
+router.post("/createService", verifyAdmin, createService);
 
 module.exports = router;
