@@ -6,7 +6,6 @@ const createServiveValidation = joi.object({
   basePrice: joi.number().required(),
   serviceProviderName: joi.string().required(),
   serviceProviderEmail: joi.string().email().required(),
-  serviceProviderId: joi.string().length(24).hex().required()
 });
 
 module.exports = { createServiveValidation };

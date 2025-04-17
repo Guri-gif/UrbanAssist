@@ -1,56 +1,86 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Table } from "antd";
+import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
 
 const Services = () => {
-  
-  const deleteButton = () => {
-    return (
-      <DeleteOutlined
-        style={{
-          color: "red",
-          fontSize: 18,
-          cursor: "pointer",
-          marginRight: 20,
-        }}
-      />
-    );
-  };
+  const [servicedata, setServiceData] = useState([]);
 
-  const editButton = () => {
-    return <EditOutlined style={{ fontSize: 18, cursor: "pointer" }} />;
-  };
-  const dataSource = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
-      action: [deleteButton(), editButton()],
-    },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
-      action: [deleteButton(), editButton()],
-    },
-  ];
+  const fetchServicedata = useCallback(async () => {
+    try {
+      const adminToken = localStorage.getItem("adminToken");
+      const res = await axios.get(
+        `http://localhost:5000/api/auth/serviceData`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
+        }
+      );
+
+      const servicesWithKey = res.data.map((service) => ({
+        key: service._id,
+        serviceName: service.name,
+        serviceProviderName: service.serviceProviderName,
+        email: service.serviceProviderEmail,
+        id: service._id,
+        basePrice: service.basePrice,
+        serviceType: service.location_type,
+        createdAt: new Date(service.createdAt).toLocaleDateString(),
+        action: (
+          <>
+            <DeleteOutlined
+              style={{
+                color: "red",
+                fontSize: 18,
+                cursor: "pointer",
+                marginRight: 20,
+              }}
+            />
+            <EditOutlined style={{ fontSize: 18, cursor: "pointer" }} />
+          </>
+        ),
+      }));
+      setServiceData(servicesWithKey);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchServicedata();
+  }, [fetchServicedata]);
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Service Name",
+      dataIndex: "serviceName",
+      key: "serviceName",
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Service Provider Name",
+      dataIndex: "serviceProviderName",
+      key: "serviceProviderName",
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Service Provider Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "basePrice",
+      dataIndex: "basePrice",
+      key: "basePrice",
+    },
+    {
+      title: "Service Type",
+      dataIndex: "serviceType",
+      key: "serviceType",
+    },
+    {
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
     },
     {
       title: "Action",
@@ -61,7 +91,7 @@ const Services = () => {
 
   return (
     <>
-      <Table dataSource={dataSource} columns={columns} />
+      <Table dataSource={servicedata} columns={columns} />
     </>
   );
 };

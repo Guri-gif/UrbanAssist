@@ -15,17 +15,14 @@ const createService = async (req, res, next) => {
       basePrice,
       serviceProviderName,
       serviceProviderEmail,
-      serviceProviderId,
     } = createServiceValues;
 
     const newService = new ServiceProvider({
-      _id: serviceProviderId,
       name,
       location_type,
       basePrice,
       serviceProviderEmail,
       serviceProviderName,
-      serviceProviderId,
     });
 
     await newService.save();

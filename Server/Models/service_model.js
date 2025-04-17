@@ -14,10 +14,6 @@ const serviceSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    _id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "ServiceProvider",
-    },
     serviceProviderName: {
       type: String,
       required: true,
