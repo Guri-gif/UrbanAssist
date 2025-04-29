@@ -323,7 +323,7 @@ const Navbar = () => {
                 )
               ) : (
                 <img
-                  src="/public/user.png"
+                  src="/user.png"
                   alt="User Avatar"
                   className="w-8 h-8 rounded-full cursor-pointer"
                 />
