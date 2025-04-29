@@ -70,7 +70,7 @@ const Cleaning = () => {
       <div className="w-auto h-screen flex gap-[50px] mx-[100px] mt-[20vh] z-0">
         <div className="w-[25%] flex flex-col gap-[20px]">
           <h1 className="text-3xl font-semibold w-[250px]">Home Cleaning</h1>
-          <Review img='./pu' review="4.8 (15k reviews)" />
+          <Review img='/pu' review="4.8 (15k reviews)" />
           <PromiseBlock>
             <Promise text="Experienced Cleaners" />
             <Promise text="Affordable Rates" />
@@ -88,13 +88,13 @@ const Cleaning = () => {
         <div className="w-[75%] h-[1000px] flex justify-between">
           <img
             className="w-[45%] h-fit rounded-lg"
-            src="src/assets/c1.jpg"
+            src="/c1.jpg"
             alt="Home Cleaning"
             loading="lazy"
           />
           <img
             className="w-[45%] h-fit rounded-lg"
-            src="src/assets/c2.jpg"
+            src="/c2.jpg"
             alt="Cleaned Living Room"
             loading="lazy"
           />
@@ -108,14 +108,14 @@ const Cleaning = () => {
         <div className="w-full md:w-1/2">
           <WorkGallery
             images={[
-              "src/assets/c3.jpg",
-              "src/assets/c4.jpg",
-              "src/assets/c5.jpg",
-              "src/assets/c6.jpg",
-              "src/assets/c7.jpg",
-              "src/assets/c8.jpg",
-              "src/assets/c9.jpg",
-              "src/assets/c10.jpg",
+              "/c3.jpg",
+              "/c4.jpg",
+              "/c5.jpg",
+              "/c6.jpg",
+              "/c7.jpg",
+              "/c8.jpg",
+              "/c9.jpg",
+              "/c10.jpg",
             ]}
           />
         </div>

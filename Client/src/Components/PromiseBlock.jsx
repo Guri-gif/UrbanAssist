@@ -8,7 +8,7 @@ const PromiseBlock = ({ children }) => {
         {children}
       </div>
       <div>
-        <img className="w-[50px]" src="src/assets//quality.png" alt="" />
+        <img className="w-[50px]" src="/quality.png" alt="" />
       </div>
     </section>
   );
