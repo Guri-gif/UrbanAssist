@@ -179,7 +179,7 @@ const Navbar = () => {
         <div className="flex justify-center items-center w-full h-full flex-col relative gap-[20px]">
           <img
             className="w-[70px] h-[70px] rounded-lg shadow-xl"
-            src="/public/logo.png"
+            src="/logo.png"
             alt="Logo"
           />
           {loading ? (
@@ -242,7 +242,7 @@ const Navbar = () => {
               <NavLink to={"/"}>
                 <img
                   className="w-[40px] h-[40px] shadow-lg rounded-lg hover:cursor-pointer hover:scale-[1.05] duration-700"
-                  src="/public/logo.png"
+                  src="/logo.png"
                   alt="Logo"
                 />
               </NavLink>
