@@ -24,7 +24,7 @@ const Footer = () => {
           <div className="w-full h-full flex flex-col justify-evenly">
             <img
               className="w-[80px] h-[80px] rounded-lg"
-              src="src/assets/logo.png"
+              src="/logo.png"
               alt=""
             />
             <p className="text-black text-sm text-left">
@@ -61,25 +61,22 @@ const Footer = () => {
             <h1 className="text-lg">Links</h1>
             <ul className="text-sm flex flex-col gap-2">
               <a href="mailto:astarxxx676@gmail.com">
-                {" "}
                 <li>Contact</li>
               </a>
               <li>About Us</li>
               <NavLink to={"/"}>
                 <li>Home</li>
               </NavLink>
-
-              <li></li>
             </ul>
             <div className="flex items-center gap-4 h-auto">
-                  <img className="w-[32px] h-[32px]" src="src/assets/mail.png" alt="" />
-                  <img className="w-[30px] h-[30px]" src="src/assets/fb.png" alt="" />
-                  <img className="w-[30px] h-[30px]" src="src/assets/x.png" alt="" />
+              <img className="w-[32px] h-[32px]" src="/mail.png" alt="" />
+              <img className="w-[30px] h-[30px]" src="/fb.png" alt="" />
+              <img className="w-[30px] h-[30px]" src="/x.png" alt="" />
             </div>
           </div>
         </div>
         <p className="absolute bottom-5 left-130">
-          Gursewak Singh © 2025- All Right Reserved
+          Gursewak Singh © 2025 - All Rights Reserved
         </p>
       </footer>
     </>

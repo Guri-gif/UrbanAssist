@@ -167,24 +167,20 @@ const Navbar = () => {
   return (
     <>
       <div
-        className={`absolute top-0 left-0 w-screen h-screen bg-black opacity-30 transition-opacity duration-[900ms] z-20 ${
-          toggle ? "opacity-50 visible" : "opacity-0 invisible"
-        }`}
+        className={`absolute top-0 left-0 w-screen h-screen bg-black opacity-30 transition-opacity duration-[900ms] z-20 ${toggle ? "opacity-50 visible" : "opacity-0 invisible"}`}
         onClick={hideSidemenu}
       ></div>
 
       {/* Side Menu */}
       <div
-        className={`fixed top-[100px] left-0 w-[35vw] h-[70vh] bg-gray-200 shadow-2xl rounded-xl transition-transform duration-[700ms] z-20 ${
-          toggle ? "translate-x-130" : "-translate-x-full"
-        }`}
+        className={`fixed top-[100px] left-0 w-[35vw] h-[70vh] bg-gray-200 shadow-2xl rounded-xl transition-transform duration-[700ms] z-20 ${toggle ? "translate-x-130" : "-translate-x-full"}`}
         onClick={handleMenuClick}
       >
         <div className="flex justify-center items-center w-full h-full flex-col relative gap-[20px]">
           <img
             className="w-[70px] h-[70px] rounded-lg shadow-xl"
-            src="src/assets/logo.png"
-            alt=""
+            src="/public/logo.png"
+            alt="Logo"
           />
           {loading ? (
             <Loading />
@@ -246,8 +242,8 @@ const Navbar = () => {
               <NavLink to={"/"}>
                 <img
                   className="w-[40px] h-[40px] shadow-lg rounded-lg hover:cursor-pointer hover:scale-[1.05] duration-700"
-                  src="src/assets/logo.png"
-                  alt=""
+                  src="/public/logo.png"
+                  alt="Logo"
                 />
               </NavLink>
 
@@ -299,9 +295,7 @@ const Navbar = () => {
           {/* Avatar / Sign In Button */}
           <div className="relative">
             <button
-              title={
-                isAuthenticated ? `Hello ,${username}` : "Sign In / Sign Up"
-              }
+              title={isAuthenticated ? `Hello ,${username}` : "Sign In / Sign Up"}
               className="fixed right-10 top-[24px]"
               onClick={() => {
                 if (isAuthenticated) {
@@ -329,7 +323,7 @@ const Navbar = () => {
                 )
               ) : (
                 <img
-                  src="src/assets/user.png"
+                  src="/public/user.png"
                   alt="User Avatar"
                   className="w-8 h-8 rounded-full cursor-pointer"
                 />

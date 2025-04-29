@@ -17,7 +17,8 @@ mdb
   .then(() => console.log("Connected to MongoDB"))
   .then(() => {
     const PORT = 5000;
-    http.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+    const HOST = '0.0.0.0';
+    http.listen(PORT,HOST, () => {
+      console.log(`Server is running on http://${HOST}:${PORT}`);
     });
   });

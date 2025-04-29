@@ -25,6 +25,26 @@ const Grooming = () => {
       userImage: "https://randomuser.me/api/portraits/men/3.jpg",
       review: "Great quality and support!",
     },
+    {
+      username: "Emma Brown",
+      userImage: "https://randomuser.me/api/portraits/women/4.jpg",
+      review: "Super helpful and friendly. 10/10!",
+    },
+    {
+      username: "Chris Lee",
+      userImage: "https://randomuser.me/api/portraits/men/5.jpg",
+      review: "Fast and reliable. Very happy!",
+    },
+    {
+      username: "Olivia Wilson",
+      userImage: "https://randomuser.me/api/portraits/women/6.jpg",
+      review: "A smooth experience from start to finish.",
+    },
+    {
+      username: "David Martinez",
+      userImage: "https://randomuser.me/api/portraits/men/7.jpg",
+      review: "Customer support is top-notch!",
+    },
   ];
 
   const faqItems = [
@@ -58,7 +78,7 @@ const Grooming = () => {
           <h1 className="text-3xl font-semibold w-[250px]">
             Men&#39;s Grooming
           </h1>
-          <Review img="src/assets/star.png" review="4.5 (10k reviews)" />
+          <Review img="/star.png" review="4.5 (10k reviews)" />
           <PromiseBlock>
             <Promise text="Verified Professionals" />
             <Promise text="Hassle Free Booking" />
@@ -69,19 +89,20 @@ const Grooming = () => {
               price="₹500"
               offer="Get Your First Makeover at ₹200"
               heading="At Home Salon Look"
+              page="/book/grooming"
             ></Offer>
           </div>
         </div>
         <div className="w-[75%] h-[1000px] flex justify-between">
           <img
             className="w-[45%] h-fit rounded-lg"
-            src="src/assets/barb1.jpg"
+            src="/barb1.jpg"
             alt=""
             loading="lazy"
           />
           <img
             className="w-[45%] h-fit rounded-lg"
-            src="src/assets/barb2.jpg"
+            src="/barb2.jpg"
             alt=""
             loading="lazy"
           />
@@ -95,14 +116,14 @@ const Grooming = () => {
         <div className="w-full md:w-1/2">
           <WorkGallery
             images={[
-              "src/assets/barb1.jpg",
-              "src/assets/barb2.jpg",
-              "src/assets/barb3.jpg",
-              "src/assets/barb4.jpg",
-              "src/assets/barb5.jpg",
-              "src/assets/barb6.jpg",
-              "src/assets/barb7.jpg",
-              "src/assets/barb8.jpg",
+              "/barb1.jpg",
+              "/barb2.jpg",
+              "/barb3.jpg",
+              "/barb4.jpg",
+              "/barb5.jpg",
+              "/barb6.jpg",
+              "/barb7.jpg",
+              "/barb8.jpg",
             ]}
           />
         </div>

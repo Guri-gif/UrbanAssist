@@ -23,6 +23,7 @@ const CreateUser = () => {
       toast.success(`Onboarded ${values.username} successfully`);
       form.resetFields();
       setToggle(false);
+      window.location.reload();
     } catch (error) {
       console.error("Error creating user:", error);
       toast.error("Failed to create user.");
@@ -85,6 +86,7 @@ const CreateUser = () => {
             <Select>
               <Option value="user">User</Option>
               <Option value="admin">Admin</Option>
+              <Option value="admin">Partner</Option>
             </Select>
           </Form.Item>
         </Form>

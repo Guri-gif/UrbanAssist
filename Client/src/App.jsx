@@ -8,7 +8,7 @@ import Grooming from "./Pages/Grooming";
 import Repairing from "./Pages/Repairing";
 import Cleaning from "./Pages/Cleaning";
 import Handymen from "./Pages/Handymen";
-import BookPainter from "./Pages/BookPainter";
+import Booking from "./Pages/Booking";
 
 function App() {
   const lenis = new Lenis();
@@ -32,7 +32,10 @@ function App() {
           <Route path="/repairing" element={<Repairing />} />
           <Route path="/cleaning" element={<Cleaning />} />
           <Route path="/handymen" element={<Handymen />} />
-          <Route path="book-painter" element={<BookPainter />} />
+
+          {/* Dynamic route for Booking */}
+          <Route path="/book/:service" element={<Booking />} />
+          
           <Route
             path="*"
             element={

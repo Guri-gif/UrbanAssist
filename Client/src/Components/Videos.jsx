@@ -1,15 +1,12 @@
 import PropTypes from "prop-types";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
 
 const Videos = ({ video, title }) => {
-  // GSAP animation for the video element
-
-  gsap.registerPlugin(useGSAP);
   const videoRef = useRef(null);
-  const tl = gsap.timeline();
-  useGSAP(() => {
+
+  useEffect(() => {
+    const tl = gsap.timeline();
     tl.fromTo(
       videoRef.current,
       {
@@ -24,6 +21,7 @@ const Videos = ({ video, title }) => {
       }
     );
   }, []);
+
   return (
     <div>
       <video

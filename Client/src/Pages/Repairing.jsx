@@ -25,6 +25,26 @@ const Repairing = () => {
       userImage: "https://randomuser.me/api/portraits/men/3.jpg",
       review: "Great quality and support!",
     },
+    {
+      username: "Emma Brown",
+      userImage: "https://randomuser.me/api/portraits/women/4.jpg",
+      review: "Super helpful and friendly. 10/10!",
+    },
+    {
+      username: "Chris Lee",
+      userImage: "https://randomuser.me/api/portraits/men/5.jpg",
+      review: "Fast and reliable. Very happy!",
+    },
+    {
+      username: "Olivia Wilson",
+      userImage: "https://randomuser.me/api/portraits/women/6.jpg",
+      review: "A smooth experience from start to finish.",
+    },
+    {
+      username: "David Martinez",
+      userImage: "https://randomuser.me/api/portraits/men/7.jpg",
+      review: "Customer support is top-notch!",
+    },
   ];
 
   const faqItems = [
@@ -57,7 +77,7 @@ const Repairing = () => {
       <div className="w-auto h-screen flex gap-[50px] mx-[100px] mt-[20vh] z-0">
         <div className="w-[25%] flex flex-col gap-[20px]">
           <h1 className="text-3xl font-semibold w-[250px]">Appliance Repairing</h1>
-          <Review img="src/assets/star.png" review="4.7 (19k reviews)" />
+          <Review img="/public/star.png" review="4.7 (19k reviews)" />
           <PromiseBlock>
             <Promise text="Verified Professionals" />
             <Promise text="Hassle Free Booking" />
@@ -68,19 +88,20 @@ const Repairing = () => {
               price="₹500"
               offer="Get Your First Repair at at ₹200"
               heading="At Home Repairing, No need to carry heavy appliances"
+              page="/book/repairing"
             ></Offer>
           </div>
         </div>
         <div className="w-[75%] h-[1000px] flex justify-between">
           <img
             className="w-[45%] h-fit rounded-lg"
-            src="src/assets/e1.jpg"
+            src="/public/e1.jpg"
             alt=""
             loading="lazy"
           />
           <img
             className="w-[45%] h-fit rounded-lg"
-            src="src/assets/e2.jpg"
+            src="/public/e2.jpg"
             alt=""
             loading="lazy"
           />
@@ -93,14 +114,14 @@ const Repairing = () => {
         <div className="w-full md:w-1/2">
           <WorkGallery
             images={[
-              "src/assets/e4.jpg",
-              "src/assets/e5.jpg",
-              "src/assets/e6.jpg",
-              "src/assets/e7.jpg",
-              "src/assets/e3.jpg",
-              "src/assets/e8.jpg",
-              "src/assets/e9.jpg",
-              "src/assets/e10.jpg",
+              "/public/e4.jpg",
+              "/public/e5.jpg",
+              "/public/e6.jpg",
+              "/public/e7.jpg",
+              "/public/e3.jpg",
+              "/public/e8.jpg",
+              "/public/e9.jpg",
+              "/public/e10.jpg",
             ]}
           />
         </div>

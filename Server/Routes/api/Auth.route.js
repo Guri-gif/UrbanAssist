@@ -11,6 +11,9 @@ const createUser = require("../../Controllers/Auth/createUser");
 const createService = require("../../Controllers/Auth/createService");
 const servicedata = require("../../Controllers/Auth/serviceData");
 const updateUser = require("../../Controllers/Auth/updateUser");
+const uploadFile = require("../../Controllers/Auth/multer");
+const createBooking = require("../../Controllers/Auth/booking");
+const updateBookingStatus = require("../../Controllers/Auth/updateBooking");
 
 router.post("/register", register);
 router.post("/login", login);
@@ -31,5 +34,8 @@ router.put(
   roleAuthMiddleware(["admin"]),
   updateUser
 );
+router.post("/uploads", uploadFile);
+router.post("/book", createBooking);
+router.put("/booking/:id/status", updateBookingStatus);
 
 module.exports = router;
