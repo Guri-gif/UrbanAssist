@@ -3,7 +3,6 @@ import PartnerNavbar from "../Components/PartnerNavbar";
 import { Outlet } from "react-router-dom";
 
 const PartnerDashboard = () => {
-  // Sample static data — replace with actual API calls later
   const analytics = {
     totalServices: 12,
     totalBookings: 87,
