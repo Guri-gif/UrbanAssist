@@ -3,7 +3,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignature, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import TypewWritter from "./TypewWritter";
 import { ToastContainer, toast } from "react-toastify";
 import Loading from "./Loading";
@@ -14,6 +14,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [toggle, setToggle] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
@@ -25,6 +26,15 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+
+  const availableServices = [
+    { name: "Women Makeup", path: "/makeup" },
+    { name: "Mens Grooming", path: "/grooming" },
+    { name: "Appliance Repair", path: "/repairing" },
+    { name: "Cleaning", path: "/cleaning" },
+    { name: "Handymen", path: "/handymen" },
+    { name: "Painter", path: "/painting" },
+  ];
 
   const showLogin = () => {
     setToggle(!toggle);
@@ -92,6 +102,25 @@ const Navbar = () => {
     }
   };
 
+  const handleServiceSearch = (searchText) => {
+    if (searchText.length < 1) {
+      setSuggestions([]);
+      return;
+    }
+
+    const matchedServices = availableServices.filter((service) =>
+      service.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    setSuggestions(matchedServices);
+  };
+
+  const handleServiceSelect = (service) => {
+    setQuery(service.name);
+    setSuggestions([]);
+    navigate(service.path);
+  };
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedAuth = localStorage.getItem("isAuthenticated");
@@ -146,15 +175,6 @@ const Navbar = () => {
     }
   };
 
-  const fetchLocations = async (searchText) => {
-    if (searchText.length < 2) return;
-    const res = await axios.get(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${searchText}&limit=4`
-    );
-    setSuggestions(res.data);
-    localStorage.setItem("Locations", JSON.stringify(res.data));
-  };
-
   gsap.registerPlugin(useGSAP);
 
   useGSAP(() => {
@@ -165,16 +185,21 @@ const Navbar = () => {
       duration: 1,
     });
   });
+
   return (
     <>
       <div
-        className={`absolute top-0 left-0 w-screen h-screen bg-black opacity-30 transition-opacity duration-[900ms] z-20 ${toggle ? "opacity-50 visible" : "opacity-0 invisible"}`}
+        className={`absolute top-0 left-0 w-screen h-screen bg-black opacity-30 transition-opacity duration-[900ms] z-20 ${
+          toggle ? "opacity-50 visible" : "opacity-0 invisible"
+        }`}
         onClick={hideSidemenu}
       ></div>
 
       {/* Side Menu */}
       <div
-        className={`fixed top-[100px] left-0 w-[35vw] h-[70vh] bg-gray-200 shadow-2xl rounded-xl transition-transform duration-[700ms] z-20 ${toggle ? "translate-x-130" : "-translate-x-full"}`}
+        className={`fixed top-[100px] left-0 w-[35vw] h-[70vh] bg-gray-200 shadow-2xl rounded-xl transition-transform duration-[700ms] z-20 ${
+          toggle ? "translate-x-130" : "-translate-x-full"
+        }`}
         onClick={handleMenuClick}
       >
         <div className="flex justify-center items-center w-full h-full flex-col relative gap-[20px]">
@@ -260,43 +285,40 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Search Inputs */}
-          <div>
+          {/* Search Input */}
+          <div className="relative">
             <input
-              className="border rounded-full text-gray-400 shadow-sm p-1 h-[40px] w-[250px] text-center"
+              className="border rounded-full shadow-sm border-gray-200 text-gray-400 p-1 h-[40px] w-[250px] text-center focus:outline-gray-400"
               type="text"
-              placeholder="Enter Your Location📍"
+              placeholder="What are you looking for?"
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
-                fetchLocations(e.target.value);
+                handleServiceSearch(e.target.value);
               }}
+              onBlur={() => setTimeout(() => setSuggestions([]), 200)}
             />
-            <ul className="absolute bg-white shadow-md w-[250px]">
-              {suggestions.map((place) => (
-                <li
-                  key={place.place_id}
-                  className="p-2 hover:bg-gray-200 cursor-pointer"
-                  onClick={() => {
-                    setQuery(place.display_name);
-                    setSuggestions([]);
-                  }}
-                >
-                  {place.display_name}
-                </li>
-              ))}
-            </ul>
+            {suggestions.length > 0 && (
+              <ul className="absolute bg-white shadow-md w-[250px] z-30 mt-1 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+                {suggestions.map((service, index) => (
+                  <li
+                    key={index}
+                    className="hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleServiceSelect(service)}
+                  >
+                    <div className="p-2">{service.name}</div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-          <input
-            className="border rounded-full shadow-sm border-gray-200 text-gray-400 p-1 h-[40px] w-[250px] text-center focus:outline-gray-400"
-            type="text"
-            placeholder="What are you looking for?"
-          />
 
           {/* Avatar / Sign In Button */}
           <div className="relative">
             <button
-              title={isAuthenticated ? `Hello ,${username}` : "Sign In / Sign Up"}
+              title={
+                isAuthenticated ? `Hello ,${username}` : "Sign In / Sign Up"
+              }
               className="fixed right-10 top-[24px]"
               onClick={() => {
                 if (isAuthenticated) {
@@ -338,7 +360,7 @@ const Navbar = () => {
                 <p className="text-black font-semibold">{username}</p>
                 <p className="text-gray-500 text-sm">{email}</p>
 
-                {/* Logout Button (Not inside another button) */}
+                {/* Logout Button */}
                 <div className="mt-2">
                   <button
                     className="text-red-500 cursor-pointer"
@@ -361,7 +383,7 @@ const Navbar = () => {
                   </button>
                 </div>
 
-                {/* Delete Account Button (Not inside another button) */}
+                {/* Delete Account Button */}
                 <div className="mt-2">
                   <button
                     onClick={deleteAccount}

@@ -18,7 +18,7 @@ const Makeup = () => {
     {
       username: "Jane Smith",
       userImage: "https://randomuser.me/api/portraits/women/2.jpg",
-      review: "Loved the experience, will come back again!",
+      review: "Loved the experience!",
     },
     {
       username: "Mike Johnson",
@@ -28,7 +28,7 @@ const Makeup = () => {
     {
       username: "Emma Brown",
       userImage: "https://randomuser.me/api/portraits/women/4.jpg",
-      review: "Super helpful and friendly. 10/10!",
+      review: "Super friendly. 10/10!",
     },
     {
       username: "Chris Lee",
@@ -101,7 +101,7 @@ const Makeup = () => {
           <Marque reviews={reviews} autoplay={true} pauseOnHover={true} />
         </div>
         <div className="w-full md:w-1/2">
-          <WorkGallery images={["/m1.jpg", "/m2.jpg", "/m3.jpg"]} />
+          <WorkGallery images={["/m1.jpg", "/m2.jpg", "/m3.jpg", "/m4.jpg", "/m5.jpg", "/m6.jpg"]} />
         </div>
       </div>
       <div className="mt-10 p-6">

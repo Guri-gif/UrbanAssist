@@ -14,31 +14,28 @@ const Cleaning = () => {
     {
       username: "James Anderson",
       userImage: "https://randomuser.me/api/portraits/men/10.jpg",
-      review:
-        "Had my shelves installed quickly. Very skilled and trustworthy handyman.",
+      review: "My house was spotless! Very thorough and professional.",
     },
     {
       username: "Linda Garcia",
       userImage: "https://randomuser.me/api/portraits/women/11.jpg",
-      review: "Repaired my leaky roof. Very prompt and did an excellent job!",
+      review: "Deep cleaned my kitchen—it looks brand new!",
     },
     {
       username: "Ethan Walker",
       userImage: "https://randomuser.me/api/portraits/men/12.jpg",
-      review:
-        "Fixed my broken fence without any hassle. Affordable and reliable.",
+      review: "Reliable and efficient. Left my home sparkling!",
     },
     {
       username: "Rachel Martinez",
       userImage: "https://randomuser.me/api/portraits/women/13.jpg",
       review:
-        "Awesome handyman! Helped with a range of issues, from plumbing to furniture assembly.",
+        "Best cleaning service I’ve used. Attention to detail is amazing!",
     },
     {
       username: "David King",
       userImage: "https://randomuser.me/api/portraits/men/14.jpg",
-      review:
-        "Excellent service! They installed my kitchen sink perfectly and cleaned up after themselves.",
+      review: "They cleaned my entire apartment quickly and perfectly.",
     },
   ];
 
@@ -70,7 +67,7 @@ const Cleaning = () => {
       <div className="w-auto h-screen flex gap-[50px] mx-[100px] mt-[20vh] z-0">
         <div className="w-[25%] flex flex-col gap-[20px]">
           <h1 className="text-3xl font-semibold w-[250px]">Home Cleaning</h1>
-          <Review img='/pu' review="4.8 (15k reviews)" />
+          <Review img="/pu" review="4.8 (15k reviews)" />
           <PromiseBlock>
             <Promise text="Experienced Cleaners" />
             <Promise text="Affordable Rates" />
@@ -88,13 +85,13 @@ const Cleaning = () => {
         <div className="w-[75%] h-[1000px] flex justify-between">
           <img
             className="w-[45%] h-fit rounded-lg"
-            src="/c1.jpg"
+            src="/c7.jpg"
             alt="Home Cleaning"
             loading="lazy"
           />
           <img
             className="w-[45%] h-fit rounded-lg"
-            src="/c2.jpg"
+            src="/c8.jpg"
             alt="Cleaned Living Room"
             loading="lazy"
           />
@@ -108,14 +105,12 @@ const Cleaning = () => {
         <div className="w-full md:w-1/2">
           <WorkGallery
             images={[
+              "/c1.jpg",
+              "/c2.jpg",
               "/c3.jpg",
               "/c4.jpg",
               "/c5.jpg",
               "/c6.jpg",
-              "/c7.jpg",
-              "/c8.jpg",
-              "/c9.jpg",
-              "/c10.jpg",
             ]}
           />
         </div>

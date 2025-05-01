@@ -14,37 +14,37 @@ const Painting = () => {
       username: "Isabella Robinson",
       userImage: "https://randomuser.me/api/portraits/women/16.jpg",
       review:
-        "Fantastic work on my office walls. Professional, tidy, and high-quality finish.",
+        "Professional, tidy, and high-quality finish.",
     },
     {
       username: "John Carter",
       userImage: "https://randomuser.me/api/portraits/men/17.jpg",
       review:
-        "Fast and affordable! They painted my entire living room, and it looks amazing!",
+        "They painted my entire living room in just one day!",
     },
     {
       username: "Emily Harris",
       userImage: "https://randomuser.me/api/portraits/women/18.jpg",
       review:
-        "Exceeded my expectations. Very neat and the results were exactly what I hoped for!",
+        "Very neat and the results were exactly what I hoped for!",
     },
     {
       username: "Daniel Thomas",
       userImage: "https://randomuser.me/api/portraits/men/19.jpg",
       review:
-        "Incredible attention to detail. My exterior looks fresh and vibrant again.",
+        "My exterior looks fresh and vibrant again.",
     },
     {
       username: "Olivia Clark",
       userImage: "https://randomuser.me/api/portraits/women/20.jpg",
       review:
-        "They did a fantastic job painting my kitchen. Very professional and efficient!",
+        "Very professional and efficient!",
     },
     {
       username: "David Lewis",
       userImage: "https://randomuser.me/api/portraits/men/21.jpg",
       review:
-        "Highly recommend for any painting job. The team was punctual and the finish was flawless.",
+        "The team was punctual and the finish was flawless.",
     },
   ];
 
@@ -106,14 +106,12 @@ const Painting = () => {
         <div className="w-full md:w-1/2">
           <WorkGallery
             images={[
-              "/paint1.jpg",
-              "/paint2.jpg",
-              "/paint3.jpg",
-              "/paint4.jpg",
-              "/paint5.jpg",
-              "/paint6.jpg",
-              "/paint7.jpg",
-              "/paint8.jpg",
+              "/p1.jpg",
+              "/p2.jpg",
+              "/p3.jpg",
+              "/p4.jpg",
+              "/p5.jpg",
+              "/p6.jpg",
             ]}
           />
         </div>

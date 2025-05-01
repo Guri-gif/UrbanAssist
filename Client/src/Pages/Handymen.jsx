@@ -13,56 +13,55 @@ const Handymen = () => {
     {
       username: "Michael Turner",
       userImage: "https://randomuser.me/api/portraits/men/15.jpg",
-      review: "The best painting service I’ve used! My house looks brand new. Highly recommend.",
+      review: "Fixed my broken fence quickly. Great service!",
     },
     {
       username: "Isabella Robinson",
       userImage: "https://randomuser.me/api/portraits/women/16.jpg",
-      review: "Fantastic work on my office walls. Professional, tidy, and high-quality finish.",
-    },
-    {
-      username: "John Carter",
-      userImage: "https://randomuser.me/api/portraits/men/17.jpg",
-      review: "Fast and affordable! They painted my entire living room, and it looks amazing!",
+      review: "Repaired my leaky faucet. Very reliable!",
     },
     {
       username: "Emily Harris",
       userImage: "https://randomuser.me/api/portraits/women/18.jpg",
-      review: "Exceeded my expectations. Very neat and the results were exactly what I hoped for!",
+      review: "Fixed my door hinge. Fast and efficient!",
     },
     {
       username: "Daniel Thomas",
       userImage: "https://randomuser.me/api/portraits/men/19.jpg",
-      review: "Incredible attention to detail. My exterior looks fresh and vibrant again.",
+      review: "Repaired my deck. Excellent craftsmanship!",
     },
     {
       username: "Olivia Clark",
       userImage: "https://randomuser.me/api/portraits/women/20.jpg",
-      review: "They did a fantastic job painting my kitchen. Very professional and efficient!",
+      review: "Unclogged my drain in minutes. Super helpful!",
     },
     {
       username: "David Lewis",
       userImage: "https://randomuser.me/api/portraits/men/21.jpg",
-      review: "Highly recommend for any painting job. The team was punctual and the finish was flawless.",
+      review: "Assembled my furniture with ease. Great job!",
     },
   ];
 
   const faqItems = [
     {
       question: "Are your handymen verified and experienced?",
-      answer: "Yes, all our handymen are background-checked, skilled, and experienced professionals.",
+      answer:
+        "Yes, all our handymen are background-checked, skilled, and experienced professionals.",
     },
     {
       question: "What are your service charges?",
-      answer: "Pricing depends on the type of job, duration, and materials required. You’ll receive an upfront estimate before booking.",
+      answer:
+        "Pricing depends on the type of job, duration, and materials required. You’ll receive an upfront estimate before booking.",
     },
     {
       question: "Do I need to provide tools and materials?",
-      answer: "Our handymen carry basic tools, but if specific materials are needed, we can arrange them at an additional cost.",
+      answer:
+        "Our handymen carry basic tools, but if specific materials are needed, we can arrange them at an additional cost.",
     },
     {
       question: "Can I schedule recurring handyman services?",
-      answer: "Yes, you can book regular maintenance or scheduled visits for ongoing repairs and upkeep.",
+      answer:
+        "Yes, you can book regular maintenance or scheduled visits for ongoing repairs and upkeep.",
     },
   ];
 
@@ -113,14 +112,12 @@ const Handymen = () => {
         <div className="w-full md:w-1/2">
           <WorkGallery
             images={[
+              "/h1.jpg",
+              "/h2.jpg",
               "/h3.jpg",
-              "/h3.jpg",
-              "/h3.jpg",
-              "/h3.jpg",
-              "/h3.jpg",
-              "/h3.jpg",
-              "/h3.jpg",
-              "/h3.jpg",
+              "/h4.jpg",
+              "/h5.jpg",
+              "/h6.jpg",
             ]}
           />
         </div>
