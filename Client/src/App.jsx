@@ -9,6 +9,7 @@ import Repairing from "./Pages/Repairing";
 import Cleaning from "./Pages/Cleaning";
 import Handymen from "./Pages/Handymen";
 import Booking from "./Pages/Booking";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   const lenis = new Lenis();
@@ -33,9 +34,16 @@ function App() {
           <Route path="/cleaning" element={<Cleaning />} />
           <Route path="/handymen" element={<Handymen />} />
 
-          {/* Dynamic route for Booking */}
-          <Route path="/book/:service" element={<Booking />} />
-          
+          {/* Protected Booking Route */}
+          <Route
+            path="/book/:service"
+            element={
+              <ProtectedRoute>
+                <Booking />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="*"
             element={

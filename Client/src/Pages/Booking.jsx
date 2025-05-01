@@ -3,6 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import axios from "axios";
 
 const Booking = () => {
   const [username, setUsername] = useState("");
@@ -28,7 +29,7 @@ const Booking = () => {
     setEmail(storedEmail);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!address.trim()) {
@@ -45,21 +46,50 @@ const Booking = () => {
       return;
     }
 
-    console.log({
-      username,
-      email,
-      address,
-      selectedDate,
-      selectedTime,
+    // Prepare the data to send to the backend
+    const bookingData = {
+      serviceId: "67fc8cba88240f3b0067c355", // This should be dynamic, set based on the selected service
+      serviceProviderId: "67fc8cba88240f3b0067c355", // This should be dynamic, set based on the selected provider
+      customerId: "67dba6b4c469ec20dd255842", // This should be dynamic, set based on the logged-in user
+      date: selectedDate,
+      time: selectedTime,
+    };
+
+    try {
+      // Send booking data to the backend API
+      const response = await axios.post("http://localhost:5000/api/auth/book", bookingData);
+
+      if (response.data.message === "Booking created successfully!") {
+        toast.success("Booking Confirmed! 🎉", {
+          position: "top-center",
+        });
+
+        // Optionally, trigger a notification for the service provider here
+        sendNotificationToServiceProvider(response.data.data);
+        
+        // Clear the form
+        setAddress("");
+        setSelectedDate("");
+        setSelectedTime("");
+      }
+    } catch (err) {
+      console.error("Error creating booking:", err);
+      toast.error("Booking failed. Please try again!", {
+        position: "top-center",
+      });
+    }
+  };
+
+  const sendNotificationToServiceProvider = (bookingData) => {
+    // Here, you can implement logic to send a popup, email, or in-app notification.
+    // For now, let's simulate it with a toast notification for the service provider.
+
+    toast.info(`New booking from ${bookingData.customerId}! Check your dashboard.`, {
+      position: "top-right",
+      autoClose: 5000,
     });
 
-    toast.success("Booking Confirmed! 🎉", {
-      position: "top-center",
-    });
-
-    setAddress("");
-    setSelectedDate("");
-    setSelectedTime("");
+    // You can replace this with an API call to send an email or real-time notification
   };
 
   useGSAP(() => {

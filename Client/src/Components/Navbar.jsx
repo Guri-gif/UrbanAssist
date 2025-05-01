@@ -348,6 +348,7 @@ const Navbar = () => {
 
                       localStorage.removeItem("user");
                       localStorage.removeItem("isAuthenticated");
+                      localStorage.removeItem("token");
 
                       toast.success(`Bye ${username}, come back soon`, {
                         style: { color: "black", background: "white" },

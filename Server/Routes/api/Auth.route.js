@@ -14,6 +14,10 @@ const updateUser = require("../../Controllers/Auth/updateUser");
 const uploadFile = require("../../Controllers/Auth/multer");
 const createBooking = require("../../Controllers/Auth/booking");
 const updateBookingStatus = require("../../Controllers/Auth/updateBooking");
+const partnerLogin = require("../../Controllers/Auth/partnerLogin");
+const partnerRegister = require("../../Controllers/Auth/partnerRegister");
+const partnerData = require('../../Controllers/Auth/providerData');
+const getProfile = require("../../Controllers/Auth/getProfile");
 
 router.post("/register", register);
 router.post("/login", login);
@@ -37,5 +41,9 @@ router.put(
 router.post("/uploads", uploadFile);
 router.post("/book", createBooking);
 router.put("/booking/:id/status", updateBookingStatus);
+router.post("/partnerLogin", partnerLogin);
+router.post('/partnerRegistration', partnerRegister)
+router.get('/partnerData', partnerData)
+router.get('/partnerProfile/:partnerId', getProfile)
 
 module.exports = router;
