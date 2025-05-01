@@ -72,6 +72,7 @@ const Navbar = () => {
 
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("username", userData.username);
+      localStorage.setItem("userId", userData._id);
       localStorage.setItem("email", userData.email);
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("token", response.data.token);

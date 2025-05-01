@@ -1,20 +1,36 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  service: "gmail", 
+  service: "gmail",
   auth: {
     user: 'astarxxx676@gmail.com',
-    pass: 'xdlg vojx iblt jzqq'
+    pass: 'xdlg vojx iblt jzqq', // Use env var in production!
   },
 });
 
-
-const sendBookingNotification = (serviceProviderEmail, bookingDetails) => {
+const sendBookingNotification = (serviceProvider, bookingDetails) => {
   const mailOptions = {
-    from: 'gursewxk69@gmail.com', 
-    to: serviceProviderEmail, 
-    subject: "New Booking Alert!", 
-    text: `You have a new booking!\n\nDetails:\nCustomer ID: ${bookingDetails.customerId}\nService ID: ${bookingDetails.serviceId}\nDate: ${bookingDetails.date}\nTime: ${bookingDetails.time}\nAddress: ${bookingDetails.address}`,
+    from: 'astarxxx676@gmail.com', 
+    to: 'gursewxk69@gmail.com',    
+    subject: "📅 New Booking Received!",
+    text: `
+Hello ${serviceProvider.name},
+
+🎉 You have a new booking on UrbanAssist!
+
+📌 Booking Details:
+---------------------------
+📍 Customer ID:     ${bookingDetails.customerId}
+🛠️  Service ID:      ${bookingDetails.serviceId}
+📅 Date:             ${bookingDetails.date}
+⏰ Time:             ${bookingDetails.time}
+🏠 Address:          ${bookingDetails.address}
+
+📨 This booking has been marked as *${bookingDetails.status}*.
+
+Best regards,  
+UrbanAssist Team 🚀
+    `,
   };
 
   return transporter.sendMail(mailOptions);

@@ -18,6 +18,7 @@ const partnerLogin = require("../../Controllers/Auth/partnerLogin");
 const partnerRegister = require("../../Controllers/Auth/partnerRegister");
 const partnerData = require('../../Controllers/Auth/providerData');
 const getProfile = require("../../Controllers/Auth/getProfile");
+const bookingData = require("../../Controllers/Auth/bookingData");
 
 router.post("/register", register);
 router.post("/login", login);
@@ -45,5 +46,6 @@ router.post("/partnerLogin", partnerLogin);
 router.post('/partnerRegistration', partnerRegister)
 router.get('/partnerData', partnerData)
 router.get('/partnerProfile/:partnerId', getProfile)
+router.get('/bookingData', bookingData)
 
 module.exports = router;

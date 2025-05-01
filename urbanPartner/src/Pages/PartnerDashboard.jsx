@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useState,  } from "react";
 import PartnerNavbar from "../Components/PartnerNavbar";
 import { Outlet } from "react-router-dom";
 
 const PartnerDashboard = () => {
-  const analytics = {
+  const [analytics, setAnalytics] = useState({
     totalServices: 12,
-    totalBookings: 87,
+    totalBookings: 87, // Initialize with the current number of bookings
     profileViews: 134,
+  });
+
+  // Update the total bookings count when a booking is accepted/rejected
+  const updateTotalBookings = (action) => {
+    setAnalytics((prev) => ({
+      ...prev,
+      totalBookings: action === "add" ? prev.totalBookings + 1 : prev.totalBookings - 1,
+    }));
   };
 
   return (
@@ -46,7 +54,8 @@ const PartnerDashboard = () => {
           </div>
         </div>
 
-        <Outlet />
+        {/* Pass the update function to PartnerBookings */}
+        <Outlet context={{ updateTotalBookings }} />
       </div>
     </div>
   );
