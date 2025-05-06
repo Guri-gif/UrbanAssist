@@ -1,17 +1,17 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: 'astarxxx676@gmail.com',
-    pass: 'xdlg vojx iblt jzqq', // Use env var in production!
+    user: "astarxxx676@gmail.com",
+    pass: "xdlg vojx iblt jzqq", // Use env var in production!
   },
 });
 
 const sendBookingNotification = (serviceProvider, bookingDetails) => {
   const mailOptions = {
-    from: 'astarxxx676@gmail.com', 
-    to: 'gursewxk69@gmail.com',    
+    from: "astarxxx676@gmail.com",
+    to: "gursewxk69@gmail.com",
     subject: "📅 New Booking Received!",
     text: `
 Hello ${serviceProvider.name},

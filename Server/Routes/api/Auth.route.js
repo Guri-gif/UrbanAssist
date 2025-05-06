@@ -19,6 +19,7 @@ const partnerRegister = require("../../Controllers/Auth/partnerRegister");
 const partnerData = require('../../Controllers/Auth/providerData');
 const getProfile = require("../../Controllers/Auth/getProfile");
 const bookingData = require("../../Controllers/Auth/bookingData");
+const googleLogin = require("../../Controllers/Auth/googleLogin");
 
 router.post("/register", register);
 router.post("/login", login);
@@ -47,5 +48,6 @@ router.post('/partnerRegistration', partnerRegister)
 router.get('/partnerData', partnerData)
 router.get('/partnerProfile/:partnerId', getProfile)
 router.get('/bookingData', bookingData)
+router.post('/google', googleLogin)
 
 module.exports = router;

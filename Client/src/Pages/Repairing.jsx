@@ -114,14 +114,14 @@ const Repairing = () => {
         <div className="w-full md:w-1/2">
           <WorkGallery
             images={[
-              "/public/e4.jpg",
-              "/public/e5.jpg",
-              "/public/e6.jpg",
-              "/public/e7.jpg",
-              "/public/e3.jpg",
-              "/public/e8.jpg",
-              "/public/e9.jpg",
-              "/public/e10.jpg",
+              "/e4.jpg",
+              "/e5.jpg",
+              "/e6.jpg",
+              "/e7.jpg",
+              "/e3.jpg",
+              "/e8.jpg",
+              "/e9.jpg",
+              "/e10.jpg",
             ]}
           />
         </div>

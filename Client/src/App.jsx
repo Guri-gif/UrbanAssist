@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Lenis from "lenis";
 import Mainpage from "./Pages/Mainpage";
 import { BrowserRouter, Route, Routes } from "react-router";
@@ -12,15 +13,20 @@ import Booking from "./Pages/Booking";
 import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
-  const lenis = new Lenis();
+  useEffect(() => {
+    const lenis = new Lenis();
 
-  // Use requestAnimationFrame to continuously update the scroll
-  function raf(time) {
-    lenis.raf(time);
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
     requestAnimationFrame(raf);
-  }
 
-  requestAnimationFrame(raf);
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
 
   return (
     <>
@@ -34,7 +40,6 @@ function App() {
           <Route path="/cleaning" element={<Cleaning />} />
           <Route path="/handymen" element={<Handymen />} />
 
-          {/* Protected Booking Route */}
           <Route
             path="/book/:service"
             element={
