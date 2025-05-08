@@ -1,14 +1,16 @@
 const Stripe = require("stripe");
 require("dotenv").config();
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const createCheckoutSession = async (req, res) => {
-  const { serviceName, customerName, customerId } = req.body;
+const payment = async (req, res, next) => {
+  const { amount, serviceName } = req.body;
 
   try {
+    const amountInCents = amount * 100;
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      mode: "payment",
       line_items: [
         {
           price_data: {
@@ -16,25 +18,21 @@ const createCheckoutSession = async (req, res) => {
             product_data: {
               name: serviceName,
             },
-            unit_amount: 5000, 
+            unit_amount: amountInCents,
           },
           quantity: 1,
         },
       ],
-      success_url: "http://localhost:3000/success",
-      cancel_url: "http://localhost:3000/cancel",
-      metadata: {
-        customerId,
-        customerName,
-        serviceName,
-      },
+      mode: "payment",
+      success_url: "http://localhost:5175/success",
+      cancel_url: "http://localhost:5175/cancel",
     });
 
-    res.status(200).json({ url: session.url });
-  } catch (error) {
-    console.error("Stripe session error:", error.message);
-    res.status(500).json({ error: "Failed to create Stripe session" });
+    res.send({ sessionId: session.id });
+  } catch (err) {
+    console.error("Error creating payment session:", err);
+    res.status(500).send({ error: err.message });
   }
 };
 
-module.exports = { createCheckoutSession };
+module.exports = payment;

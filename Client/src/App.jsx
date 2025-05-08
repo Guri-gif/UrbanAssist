@@ -11,6 +11,8 @@ import Cleaning from "./Pages/Cleaning";
 import Handymen from "./Pages/Handymen";
 import Booking from "./Pages/Booking";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import Success from "./Pages/Success";
+import Cancel from "./Pages/Cancel";
 
 function App() {
   useEffect(() => {
@@ -39,6 +41,9 @@ function App() {
           <Route path="/repairing" element={<Repairing />} />
           <Route path="/cleaning" element={<Cleaning />} />
           <Route path="/handymen" element={<Handymen />} />
+          
+          <Route path="/success" element={<Success />} />
+          <Route path="/cancel" element={<Cancel />} />
 
           <Route
             path="/book/:service"

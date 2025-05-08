@@ -4,7 +4,11 @@ import "react-toastify/dist/ReactToastify.css";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(
+  "pk_test_51Q824bP1SQGnHBcZ9hGu4mXg3MStQgOLeuaFPgocF3QdqtHqEXuYAXKVu8h7V7sYY8LlTK7K57wdSe3m8yGAAXvm00zkViOYS0"
+);
 
 const Booking = () => {
   const [customerName, setCustomerName] = useState("");
@@ -12,10 +16,8 @@ const Booking = () => {
   const [address, setAddress] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
-  const [selectedService, setSelectedService] = useState("");  // Added service selection state
+  const [selectedService, setSelectedService] = useState("");
   const [pageBackground, setPageBackground] = useState("#f4f4f9");
-
-  const navigate = useNavigate();
 
   const generateRandomBackground = () => {
     const colors = ["#f4f4f9", "#e0f7fa", "#fff3e0", "#fce4ec", "#ffecb3"];
@@ -35,67 +37,69 @@ const Booking = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedDate || !selectedTime) {
-      toast.error("Please select both date and time!");
-      return;
-    }
-
-    if (!address.trim()) {
-      toast.error("Please enter your address!");
-      return;
-    }
-
-    if (!selectedService) {
-      toast.error("Please select a service!");
-      return;
-    }
+    if (!selectedDate || !selectedTime)
+      return toast.error("Please select both date and time!");
+    if (!address.trim()) return toast.error("Please enter your address!");
+    if (!selectedService) return toast.error("Please select a service!");
 
     const customerId = String(localStorage.getItem("userId"));
-    if (!customerId) {
-      toast.error("User is not logged in!");
-      return;
-    }
+    if (!customerId) return toast.error("User is not logged in!");
 
-    const serviceId = "67fc8cba88240f3b0067c355";  // Your hardcoded serviceId
+    const serviceId = "67fc8cba88240f3b0067c355";
 
     const bookingData = {
       serviceId,
       customerId,
       customerName,
-      serviceName: selectedService,  // Adding serviceName to the data
+      serviceName: selectedService,
       date: selectedDate,
       time: selectedTime,
       address,
     };
-
-    console.log("Booking Data:", bookingData); // Debugging to check the payload
 
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/book",
         bookingData
       );
-      console.log(response.data);
 
       if (response.data.message === "Booking created successfully!") {
-        toast.success("Booking Confirmed! 🎉");
-        sendNotificationToServiceProvider(bookingData);
-        navigate("/");
+        toast.success("Booking Confirmed! Redirecting to Payment...");
+
+        const paymentRes = await axios.post(
+          "http://localhost:5000/api/auth/payment",
+          {
+            amount: 0.05,
+            serviceName: selectedService,
+          }
+        );
+
+        const sessionId = paymentRes.data.sessionId;
+
+        if (!sessionId) {
+          toast.error("Payment session creation failed!");
+          return;
+        }
+
+        const stripe = await stripePromise;
+        const { error } = await stripe.redirectToCheckout({
+          sessionId: sessionId,
+        });
+
+        if (error) {
+          console.error("Stripe Checkout Error:", error);
+          toast.error("Payment redirection failed: " + error.message);
+        }
       }
     } catch (err) {
-      console.error("Booking failed:", err.response ? err.response.data : err.message);
-      toast.error("Booking failed! " + (err.response ? err.response.data.message : err.message));
+      console.error(
+        "Booking/payment failed:",
+        err.response?.data || err.message
+      );
+      toast.error(
+        "Booking/payment failed: " + (err.response?.data.message || err.message)
+      );
     }
-  };
-
-  const sendNotificationToServiceProvider = (bookingData) => {
-    toast.info(
-      `New booking from ${bookingData.customerId}! Check your dashboard.`,
-      {
-        position: "top-right",
-        autoClose: 5000,
-      }
-    );
   };
 
   useGSAP(() => {
@@ -121,7 +125,6 @@ const Booking = () => {
           Book Your Service
         </h1>
 
-        {/* Customer Name */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-gray-700">
             Customer Name
@@ -135,7 +138,6 @@ const Booking = () => {
           />
         </div>
 
-        {/* Email */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-gray-700">Email</label>
           <input
@@ -146,7 +148,6 @@ const Booking = () => {
           />
         </div>
 
-        {/* Address */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-gray-700">Address</label>
           <textarea
@@ -158,9 +159,10 @@ const Booking = () => {
           />
         </div>
 
-        {/* Date Picker */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-700">Select Date</label>
+          <label className="text-sm font-semibold text-gray-700">
+            Select Date
+          </label>
           <input
             type="date"
             value={selectedDate}
@@ -170,9 +172,10 @@ const Booking = () => {
           />
         </div>
 
-        {/* Time Picker */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-700">Select Time</label>
+          <label className="text-sm font-semibold text-gray-700">
+            Select Time
+          </label>
           <input
             type="time"
             value={selectedTime}
@@ -182,9 +185,10 @@ const Booking = () => {
           />
         </div>
 
-        {/* Service Dropdown */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-700">Select Service</label>
+          <label className="text-sm font-semibold text-gray-700">
+            Select Service
+          </label>
           <select
             value={selectedService}
             onChange={(e) => setSelectedService(e.target.value)}
@@ -201,7 +205,6 @@ const Booking = () => {
           </select>
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="bg-black text-white py-3 rounded-lg hover:scale-[1.04] hover:bg-gray-900 transition-transform duration-500"
@@ -209,7 +212,6 @@ const Booking = () => {
           Confirm Booking
         </button>
 
-        {/* Toast Container */}
         <ToastContainer />
       </form>
     </div>
