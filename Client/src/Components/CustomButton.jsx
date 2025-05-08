@@ -1,8 +1,10 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const CustomButton = () => {
+  const navigate = useNavigate();
 
   const responseGoogle = async (authResult) => {
     console.log("Google Auth Response:", authResult);
@@ -16,6 +18,8 @@ const CustomButton = () => {
         const token = res.data.token;
         const obj = { email, name, token, image };
         localStorage.setItem("user-info", JSON.stringify(obj));
+
+        navigate("/"); 
       } else {
         throw new Error("Google authentication failed");
       }

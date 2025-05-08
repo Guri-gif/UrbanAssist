@@ -77,7 +77,7 @@ const Repairing = () => {
       <div className="w-auto h-screen flex gap-[50px] mx-[100px] mt-[20vh] z-0">
         <div className="w-[25%] flex flex-col gap-[20px]">
           <h1 className="text-3xl font-semibold w-[250px]">Appliance Repairing</h1>
-          <Review img="/public/star.png" review="4.7 (19k reviews)" />
+          <Review img="/star.png" review="4.7 (19k reviews)" />
           <PromiseBlock>
             <Promise text="Verified Professionals" />
             <Promise text="Hassle Free Booking" />
@@ -95,13 +95,13 @@ const Repairing = () => {
         <div className="w-[75%] h-[1000px] flex justify-between">
           <img
             className="w-[45%] h-fit rounded-lg"
-            src="/public/e1.jpg"
+            src="/e1.jpg"
             alt=""
             loading="lazy"
           />
           <img
             className="w-[45%] h-fit rounded-lg"
-            src="/public/e2.jpg"
+            src="/e2.jpg"
             alt=""
             loading="lazy"
           />
