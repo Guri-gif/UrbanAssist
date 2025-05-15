@@ -49,6 +49,7 @@ const createUser = async (req, res, next) => {
       </table>
       <p style="margin-top: 20px;">You can now login and start using the platform.</p>
       <p>Cheers,<br/>Team UrbanAssist</p>
+      <a href="https://urban-assist.vercel.app/">Go to our website</a>
     </div>
   </div>
 </body>`

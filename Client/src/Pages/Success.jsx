@@ -1,10 +1,14 @@
+import { useEffect } from "react";
 
 const Success = () => {
-  return (
-    <div>
-      Payment Done Successfully! Redirecting to Home Page...
-    </div>
-  )
-}
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.location.href = "/";
+    }, 3000);
 
-export default Success
+    return () => clearTimeout(timer);
+  }, []);
+  return <div>Payment Done Successfully! Redirecting to Home Page...</div>;
+};
+
+export default Success;

@@ -26,6 +26,8 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [bookingData, setBookingData] = useState(null);
+  const [showBookingModal, setShowBookingModal] = useState(false);
 
   const availableServices = [
     { name: "Women Makeup", path: "/makeup" },
@@ -175,6 +177,41 @@ const Navbar = () => {
     }
   };
 
+  const userBookingData = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      toast.error("No User with Such id");
+      return;
+    }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Token not found");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/auth/userBookingData/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Check if the data is in response.data or response.data.data
+      const data = response.data.data || response.data;
+      setBookingData(Array.isArray(data) ? data : [data]);
+      setShowBookingModal(true);
+      console.log("Booking data:", data);
+    } catch (error) {
+      console.error("Booking error:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to fetch booking data"
+      );
+    }
+  };
   gsap.registerPlugin(useGSAP);
 
   useGSAP(() => {
@@ -356,9 +393,19 @@ const Navbar = () => {
 
             {/* User Dropdown */}
             {showDropdown && isAuthenticated && (
-              <div className="absolute top-[6vh] right-[-100] bg-white shadow-lg rounded-lg p-4 w-[200px]">
+              <div className="absolute z-60 top-[6vh] right-[-100] bg-white shadow-lg rounded-lg p-4 w-[200px]">
                 <p className="text-black font-semibold">{username}</p>
                 <p className="text-gray-500 text-sm">{email}</p>
+
+                {/* My Bookings Button */}
+                <div className="mt-2">
+                  <button
+                    className="text-blue-500 cursor-pointer"
+                    onClick={userBookingData}
+                  >
+                    My Bookings
+                  </button>
+                </div>
 
                 {/* Logout Button */}
                 <div className="mt-2">
@@ -368,11 +415,9 @@ const Navbar = () => {
                       setIsAuthenticated(false);
                       setUser(null);
                       setShowDropdown(false);
-
                       localStorage.removeItem("user");
                       localStorage.removeItem("isAuthenticated");
                       localStorage.removeItem("token");
-
                       toast.success(`Bye ${username}, come back soon`, {
                         style: { color: "black", background: "white" },
                         progressStyle: { background: "red" },
@@ -393,6 +438,136 @@ const Navbar = () => {
                   </button>
                 </div>
               </div>
+            )}
+            {showBookingModal && (
+              <>
+                {/* Dark Overlay */}
+
+                <div className="fixed inset-0 flex items-center justify-center z-50 top-[400px]">
+                  <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto relative">
+                    <div className="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
+                      <h2 className="text-xl font-bold">My Bookings</h2>
+                      <button
+                        onClick={() => setShowBookingModal(false)}
+                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                        aria-label="Close modal"
+                      >
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* Modal Content */}
+                    <div className="p-6">
+                      {bookingData ? (
+                        <div className="space-y-4">
+                          {bookingData.length > 0 ? (
+                            bookingData.map((booking, index) => {
+                              const bookingDetails = booking.data || booking;
+                              return (
+                                <div
+                                  key={index}
+                                  className="border-b pb-4 last:border-b-0"
+                                >
+                                  <p className="font-semibold">
+                                    Booking #{index + 1}
+                                  </p>
+                                  <div className="grid grid-cols-2 gap-2 mt-2">
+                                    <div>
+                                      <p className="text-sm text-gray-600">
+                                        Date:
+                                      </p>
+                                      <p>
+                                        {bookingDetails.date
+                                          ? new Date(
+                                              bookingDetails.date
+                                            ).toLocaleDateString()
+                                          : "N/A"}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm text-gray-600">
+                                        Time:
+                                      </p>
+                                      <p>{bookingDetails.time || "N/A"}</p>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm text-gray-600">
+                                        Service:
+                                      </p>
+                                      <p>
+                                        {bookingDetails.serviceName || "N/A"}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm text-gray-600">
+                                        Status:
+                                      </p>
+                                      <p
+                                        className={`capitalize ${
+                                          bookingDetails.status === "accepted"
+                                            ? "text-green-500"
+                                            : bookingDetails.status ===
+                                              "cancelled"
+                                            ? "text-red-500"
+
+                                            :bookingDetails.status === 'pending'
+                                            ? "text-yellow-500"
+                                            :bookingData
+
+                                        }`}
+                                      >
+                                        {bookingDetails.status || "N/A"}
+                                      </p>
+                                    </div>
+                                    {bookingDetails.address && (
+                                      <div className="col-span-2">
+                                        <p className="text-sm text-gray-600">
+                                          Address:
+                                        </p>
+                                        <p>{bookingDetails.address}</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            <div className="text-center py-4">
+                              <p>No bookings found.</p>
+                              <button
+                                onClick={() => {
+                                  setShowBookingModal(false);
+                                  navigate("/services");
+                                }}
+                                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+                              >
+                                Book a Service Now
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex justify-center items-center h-20">
+                          <Loading />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </div>

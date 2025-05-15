@@ -16,11 +16,12 @@ const createBooking = require("../../Controllers/Auth/booking");
 const updateBookingStatus = require("../../Controllers/Auth/updateBooking");
 const partnerLogin = require("../../Controllers/Auth/partnerLogin");
 const partnerRegister = require("../../Controllers/Auth/partnerRegister");
-const partnerData = require('../../Controllers/Auth/providerData');
+const partnerData = require("../../Controllers/Auth/providerData");
 const getProfile = require("../../Controllers/Auth/getProfile");
 const bookingData = require("../../Controllers/Auth/bookingData");
 const googleLogin = require("../../Controllers/Auth/googleLogin");
 const payment = require("../../Controllers/Auth/stripeSession");
+const userBookingData = require("../../Controllers/Auth/userBookingData");
 
 router.post("/register", register);
 router.post("/login", login);
@@ -45,11 +46,12 @@ router.post("/uploads", uploadFile);
 router.post("/book", createBooking);
 router.put("/booking/:id/status", updateBookingStatus);
 router.post("/partnerLogin", partnerLogin);
-router.post('/partnerRegistration', partnerRegister)
-router.get('/partnerData', partnerData)
-router.get('/partnerProfile/:partnerId', getProfile)
-router.get('/bookingData', bookingData)
-router.post('/google', googleLogin)
-router.post('/payment', payment)
+router.post("/partnerRegistration", partnerRegister);
+router.get("/partnerData", partnerData);
+router.get("/partnerProfile/:partnerId", getProfile);
+router.get("/bookingData", authMiddleware, bookingData);
+router.post("/google", googleLogin);
+router.post("/payment", authMiddleware, payment);
+router.get("/userBookingData/:id", userBookingData)
 
 module.exports = router;
