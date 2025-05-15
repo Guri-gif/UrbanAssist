@@ -26,6 +26,7 @@
     "@react-spring/web": "^9.7.5",
     "@stripe/stripe-js": "^7.3.0",
     "@tailwindcss/vite": "^4.0.0",
+    "antd": "^5.25.1",
     "axios": "^1.8.1",
     "browser-sync": "^3.0.4",
     "framer-motion": "^12.9.4",
