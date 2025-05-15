@@ -12,6 +12,7 @@ import instance from "../axiosInstance";
 import { apiURL } from "../config";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { Modal, Button, Spin } from "antd";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -440,134 +441,99 @@ const Navbar = () => {
               </div>
             )}
             {showBookingModal && (
-              <>
-                {/* Dark Overlay */}
-
-                <div className="fixed inset-0 flex items-center justify-center z-50 top-[400px]">
-                  <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto relative">
-                    <div className="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
-                      <h2 className="text-xl font-bold">My Bookings</h2>
-                      <button
-                        onClick={() => setShowBookingModal(false)}
-                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                        aria-label="Close modal"
-                      >
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-
-                    {/* Modal Content */}
-                    <div className="p-6">
-                      {bookingData ? (
-                        <div className="space-y-4">
-                          {bookingData.length > 0 ? (
-                            bookingData.map((booking, index) => {
-                              const bookingDetails = booking.data || booking;
-                              return (
-                                <div
-                                  key={index}
-                                  className="border-b pb-4 last:border-b-0"
+              <Modal
+                title="My Bookings"
+                visible={showBookingModal}
+                onCancel={() => setShowBookingModal(false)}
+                footer={null}
+                width={800}
+                bodyStyle={{ maxHeight: "60vh", overflowY: "auto" }}
+              >
+                {bookingData ? (
+                  <div className="space-y-4">
+                    {bookingData.length > 0 ? (
+                      bookingData.map((booking, index) => {
+                        const bookingDetails = booking.data || booking;
+                        return (
+                          <div
+                            key={index}
+                            className="border-b pb-4 last:border-b-0"
+                          >
+                            <p className="font-semibold">
+                              Booking #{index + 1}
+                            </p>
+                            <div className="grid grid-cols-2 gap-2 mt-2">
+                              <div>
+                                <p className="text-sm text-gray-600">Date:</p>
+                                <p>
+                                  {bookingDetails.date
+                                    ? new Date(
+                                        bookingDetails.date
+                                      ).toLocaleDateString()
+                                    : "N/A"}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-gray-600">Time:</p>
+                                <p>{bookingDetails.time || "N/A"}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-gray-600">
+                                  Service:
+                                </p>
+                                <p>{bookingDetails.serviceName || "N/A"}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-gray-600">Status:</p>
+                                <p
+                                  className={`capitalize ${
+                                    bookingDetails.status === "accepted"
+                                      ? "text-green-500"
+                                      : bookingDetails.status === "cancelled"
+                                      ? "text-red-500"
+                                      : bookingDetails.status === "pending"
+                                      ? "text-yellow-500"
+                                      : bookingData
+                                  }`}
                                 >
-                                  <p className="font-semibold">
-                                    Booking #{index + 1}
+                                  {bookingDetails.status || "N/A"}
+                                </p>
+                              </div>
+                              {bookingDetails.address && (
+                                <div className="col-span-2">
+                                  <p className="text-sm text-gray-600">
+                                    Address:
                                   </p>
-                                  <div className="grid grid-cols-2 gap-2 mt-2">
-                                    <div>
-                                      <p className="text-sm text-gray-600">
-                                        Date:
-                                      </p>
-                                      <p>
-                                        {bookingDetails.date
-                                          ? new Date(
-                                              bookingDetails.date
-                                            ).toLocaleDateString()
-                                          : "N/A"}
-                                      </p>
-                                    </div>
-                                    <div>
-                                      <p className="text-sm text-gray-600">
-                                        Time:
-                                      </p>
-                                      <p>{bookingDetails.time || "N/A"}</p>
-                                    </div>
-                                    <div>
-                                      <p className="text-sm text-gray-600">
-                                        Service:
-                                      </p>
-                                      <p>
-                                        {bookingDetails.serviceName || "N/A"}
-                                      </p>
-                                    </div>
-                                    <div>
-                                      <p className="text-sm text-gray-600">
-                                        Status:
-                                      </p>
-                                      <p
-                                        className={`capitalize ${
-                                          bookingDetails.status === "accepted"
-                                            ? "text-green-500"
-                                            : bookingDetails.status ===
-                                              "cancelled"
-                                            ? "text-red-500"
-
-                                            :bookingDetails.status === 'pending'
-                                            ? "text-yellow-500"
-                                            :bookingData
-
-                                        }`}
-                                      >
-                                        {bookingDetails.status || "N/A"}
-                                      </p>
-                                    </div>
-                                    {bookingDetails.address && (
-                                      <div className="col-span-2">
-                                        <p className="text-sm text-gray-600">
-                                          Address:
-                                        </p>
-                                        <p>{bookingDetails.address}</p>
-                                      </div>
-                                    )}
-                                  </div>
+                                  <p>{bookingDetails.address}</p>
                                 </div>
-                              );
-                            })
-                          ) : (
-                            <div className="text-center py-4">
-                              <p>No bookings found.</p>
-                              <button
-                                onClick={() => {
-                                  setShowBookingModal(false);
-                                  navigate("/services");
-                                }}
-                                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                              >
-                                Book a Service Now
-                              </button>
+                              )}
                             </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="flex justify-center items-center h-20">
-                          <Loading />
-                        </div>
-                      )}
-                    </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-4">
+                        <p>No bookings found.</p>
+                        <Button
+                          type="primary"
+                          onClick={() => {
+                            setShowBookingModal(false);
+                            navigate("/services");
+                          }}
+                          className="mt-2"
+                        >
+                          Book a Service Now
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                </div>
-              </>
+                ) : (
+                  <div className="flex justify-center items-center h-20">
+                    <Spin />{" "}
+                    {/* Ant Design's Spin component instead of Loading */}
+                  </div>
+                )}
+              </Modal>
             )}
           </div>
         </div>
