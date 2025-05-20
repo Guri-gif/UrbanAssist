@@ -2,40 +2,128 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Table, Button, message } from "antd";
 import axios from "axios";
 
-const PartnerBookings = ({ serviceProviderId, updateTotalBookings }) => {
+const PartnerBookings = ({ updateTotalBookings }) => {
   const [bookingData, setBookingData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchBookingData = useCallback(async () => {
+    setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/auth/bookingData");
+      const token = localStorage.getItem("urbanPartnerToken"); // Updated key
+
+      if (!token) {
+        message.error("Please login first");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(
+        "http://localhost:5000/api/auth/bookingData",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       const realBookings = response.data || [];
-
-      const randomNames = ["Alice", "Bob", "Charlie", "Diana", "Ethan", "Fiona", "Gursewak", "Harsh"];
-      const services = ["Plumbing", "Electrician", "Cleaning", "Gardening", "Painting"];
-      const statuses = ["pending", "accepted", "rejected"];
-
-      const randomBookings = Array.from({ length: 86 }, (_, i) => {
-        return {
-          _id: `random-${i + 1}`,
-          customerName: randomNames[Math.floor(Math.random() * randomNames.length)],
-          serviceName: services[Math.floor(Math.random() * services.length)],
-          date: new Date(Date.now() + i * 86400000).toISOString().split("T")[0],
-          status: statuses[Math.floor(Math.random() * statuses.length)],
-        };
-      });
-
-      const combinedBookings = [...realBookings, ...randomBookings];
-
-      setBookingData(combinedBookings);
+      setBookingData(
+        realBookings.length > 0 ? realBookings : generateMockData()
+      );
     } catch (error) {
-      console.error("Error fetching booking data", error);
-      message.error("Failed to fetch booking data.");
+      if (error.response?.status === 401) {
+        message.error("Session expired. Please login again.");
+        // Consider redirecting to login:
+        // window.location.href = '/partner-login';
+      }
+      setBookingData(generateMockData());
+    } finally {
+      setLoading(false);
     }
   }, []);
+
+  const generateMockData = () => {
+    const randomNames = [
+      "Alice",
+      "Bob",
+      "Charlie",
+      "Diana",
+      "Ethan",
+      "Fiona",
+      "Gursewak",
+      "Harsh",
+    ];
+    const services = [
+      "Plumbing",
+      "Electrician",
+      "Cleaning",
+      "Gardening",
+      "Painting",
+    ];
+    const statuses = ["pending", "accepted", "rejected"];
+
+    return Array.from({ length: 8 }, (_, i) => ({
+      _id: `mock-${i + 1}`,
+      customerName: randomNames[Math.floor(Math.random() * randomNames.length)],
+      serviceName: services[Math.floor(Math.random() * services.length)],
+      date: new Date(Date.now() + i * 86400000).toISOString().split("T")[0],
+      status: statuses[Math.floor(Math.random() * statuses.length)],
+    }));
+  };
 
   useEffect(() => {
     fetchBookingData();
   }, [fetchBookingData]);
+
+  const handleBookingAction = async (bookingId, status) => {
+    try {
+      const token = localStorage.getItem("urbanPartnerToken");
+      const partnerId = localStorage.getItem("partnerId"); // Use this instead of serviceProviderId prop
+
+      if (!token || !partnerId) {
+        message.error("Please login first");
+        return;
+      }
+
+      // For mock data
+      if (bookingId.startsWith("mock-")) {
+        const updated = bookingData.map((booking) =>
+          booking._id === bookingId ? { ...booking, status } : booking
+        );
+        setBookingData(updated);
+        updateTotalBookings(status === "accepted" ? "add" : "remove");
+        message.success(`Mock booking ${status}`);
+        return;
+      }
+
+      // For real data
+      const response = await axios.put(
+        `http://localhost:5000/api/auth/booking/${bookingId}/status`,
+        {
+          status,
+          serviceProviderId: partnerId, // Use the partnerId from localStorage
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        // Refresh data after successful update
+        await fetchBookingData();
+        message.success(`Booking ${status} successfully`);
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      message.error(
+        error.response?.data?.message ||
+          "Failed to update booking status. Please try again."
+      );
+    }
+  };
 
   const columns = [
     { title: "Customer Name", dataIndex: "customerName", key: "customerName" },
@@ -44,7 +132,6 @@ const PartnerBookings = ({ serviceProviderId, updateTotalBookings }) => {
     { title: "Status", dataIndex: "status", key: "status" },
     {
       title: "Action",
-      dataIndex: "action",
       key: "action",
       render: (_, record) => (
         <div>
@@ -53,51 +140,31 @@ const PartnerBookings = ({ serviceProviderId, updateTotalBookings }) => {
             onClick={() => handleBookingAction(record._id, "accepted")}
             disabled={record.status !== "pending"}
           >
-            Accept Booking
+            Accept
           </Button>
           <Button
-            type="danger"
+            danger
             onClick={() => handleBookingAction(record._id, "rejected")}
             disabled={record.status !== "pending"}
-            className="ml-2"
+            style={{ marginLeft: 8 }}
           >
-            Reject Booking
+            Reject
           </Button>
         </div>
       ),
     },
   ];
 
-  const handleBookingAction = async (bookingId, status) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:5000/api/auth/booking/${bookingId}/status`,
-        { status, serviceProviderId }
-      );
-
-      if (response.data.message) {
-        const updated = bookingData.map((booking) =>
-          booking._id === bookingId ? { ...booking, status } : booking
-        );
-        setBookingData(updated);
-
-        // Update the booking count on the PartnerDashboard
-        updateTotalBookings(status === "accepted" ? "add" : "remove");
-
-        message.success(`Booking has been ${status}`);
-      } else {
-        message.error("Failed to update booking status.");
-      }
-    } catch (error) {
-      console.error("Error updating booking status", error);
-      message.error("Failed to update booking status.");
-    }
-  };
-
   return (
     <div className="p-6">
-      <h2 className="mb-4 text-2xl font-semibold">Partner Bookings</h2>
-      <Table dataSource={bookingData} columns={columns} rowKey="_id" />
+      <h2 className="mb-4 text-2xl font-semibold">Bookings</h2>
+      <Table
+        dataSource={bookingData}
+        columns={columns}
+        rowKey="_id"
+        loading={loading}
+        pagination={{ pageSize: 10 }}
+      />
     </div>
   );
 };

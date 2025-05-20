@@ -4,29 +4,32 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "astarxxx676@gmail.com",
-    pass: "xdlg vojx iblt jzqq", // Use env var in production!
+    pass: "xdlg vojx iblt jzqq", 
   },
 });
 
-const sendBookingNotification = (serviceProvider, bookingDetails) => {
+const sendBookingNotification = (booking) => {
+  if (!booking) {
+    throw new Error("No booking details provided");
+  }
+
   const mailOptions = {
     from: "astarxxx676@gmail.com",
-    to: "gursewxk69@gmail.com",
-    subject: "📅 New Booking Received!",
+    to: "gursewxk69@gmail.com", // Ideally should be service provider's email
+    subject: `📅 Booking ${booking.status || 'Updated'}!`,
     text: `
-Hello ${serviceProvider.name},
+Hello Service Provider,
 
-🎉 You have a new booking on UrbanAssist!
+${booking.status === 'accepted' ? '🎉 A booking has been accepted!' : 'ℹ️ A booking status has changed'}
 
 📌 Booking Details:
 ---------------------------
-📍 Customer ID:     ${bookingDetails.customerId}
-🛠️  Service ID:      ${bookingDetails.serviceId}
-📅 Date:             ${bookingDetails.date}
-⏰ Time:             ${bookingDetails.time}
-🏠 Address:          ${bookingDetails.address}
-
-📨 This booking has been marked as *${bookingDetails.status}*.
+📍 Customer ID:     ${booking.customerId || "Not specified"}
+🛠️  Service ID:      ${booking.serviceId || "Not specified"}
+📅 Date:             ${booking.date || "Not specified"}
+⏰ Time:             ${booking.time || "Not specified"}
+🏠 Address:          ${booking.address || "Not specified"}
+📝 Status:           ${booking.status || "Pending"}
 
 Best regards,  
 UrbanAssist Team 🚀

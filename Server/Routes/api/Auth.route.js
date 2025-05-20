@@ -49,9 +49,9 @@ router.post("/partnerLogin", partnerLogin);
 router.post("/partnerRegistration", partnerRegister);
 router.get("/partnerData", partnerData);
 router.get("/partnerProfile/:partnerId", getProfile);
-router.get("/bookingData", authMiddleware, bookingData);
+router.get("/bookingData/:id?", authMiddleware, bookingData);
 router.post("/google", googleLogin);
 router.post("/payment", authMiddleware, payment);
-router.get("/userBookingData/:id", userBookingData)
+router.get("/userBookingData/:id", userBookingData);
 
 module.exports = router;
