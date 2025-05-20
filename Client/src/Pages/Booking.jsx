@@ -6,18 +6,19 @@ import { useGSAP } from "@gsap/react";
 import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe(
-  "pk_test_51Q824bP1SQGnHBcZ9hGu4mXg3MStQgOLeuaFPgocF3QdqtHqEXuYAXKVu8h7V7sYY8LlTK7K57wdSe3m8yGAAXvm00zkViOYS0"
-);
+const stripePromise = loadStripe(  "pk_test_51Q824bP1SQGnHBcZ9hGu4mXg3MStQgOLeuaFPgocF3QdqtHqEXuYAXKVu8h7V7sYY8LlTK7K57wdSe3m8yGAAXvm00zkViOYS0");
 
 const Booking = () => {
-  const [customerName, setCustomerName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [selectedService, setSelectedService] = useState("");
+  const [formData, setFormData] = useState({
+    customerName: "",
+    email: "",
+    address: "",
+    selectedDate: "",
+    selectedTime: "",
+    selectedService: ""
+  });
   const [pageBackground, setPageBackground] = useState("#f4f4f9");
+  const [isLoading, setIsLoading] = useState(false);
 
   const generateRandomBackground = () => {
     const colors = ["#f4f4f9", "#e0f7fa", "#fff3e0", "#fce4ec", "#ffecb3"];
@@ -26,79 +27,116 @@ const Booking = () => {
 
   useEffect(() => {
     setPageBackground(generateRandomBackground());
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      toast.error("Please login first!");
+      // Redirect to login if needed
+    }
 
-    const storedCustomerName = localStorage.getItem("username") || "";
-    const storedEmail = localStorage.getItem("email") || "";
-
-    setCustomerName(storedCustomerName);
-    setEmail(storedEmail);
+    setFormData({
+      customerName: localStorage.getItem("username") || "",
+      email: localStorage.getItem("email") || "",
+      address: "",
+      selectedDate: "",
+      selectedTime: "",
+      selectedService: ""
+    });
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const validateForm = () => {
+    if (!formData.selectedDate || !formData.selectedTime) {
+      toast.error("Please select both date and time!");
+      return false;
+    }
+    if (!formData.address.trim()) {
+      toast.error("Please enter your address!");
+      return false;
+    }
+    if (!formData.selectedService) {
+      toast.error("Please select a service!");
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
-    if (!selectedDate || !selectedTime)
-      return toast.error("Please select both date and time!");
-    if (!address.trim()) return toast.error("Please enter your address!");
-    if (!selectedService) return toast.error("Please select a service!");
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    
+    if (!token || !userId) {
+      toast.error("Please login first!");
+      return;
+    }
 
-    const customerId = String(localStorage.getItem("userId"));
-    if (!customerId) return toast.error("User is not logged in!");
-
-    const serviceId = "67fc8cba88240f3b0067c355";
-
-    const bookingData = {
-      serviceId,
-      customerId,
-      customerName,
-      serviceName: selectedService,
-      date: selectedDate,
-      time: selectedTime,
-      address,
-    };
+    setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/book",
-        bookingData
-      );
+      // 1. Create booking
+      const bookingData = {
+        serviceId: "67fc8cba88240f3b0067c355", // Should ideally be dynamic
+        customerId: userId,
+        customerName: formData.customerName,
+        serviceName: formData.selectedService,
+        date: formData.selectedDate,
+        time: formData.selectedTime,
+        address: formData.address
+      };
 
-      if (response.data.message === "Booking created successfully!") {
-        toast.success("Booking Confirmed! Redirecting to Payment...");
-
-        const paymentRes = await axios.post(
-          "http://localhost:5000/api/auth/payment",
-          {
-            amount: 0.05,
-            serviceName: selectedService,
+      const bookingResponse = await axios.post(
+        `http://localhost:5000/api/auth/book`,
+        bookingData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        );
-
-        const sessionId = paymentRes.data.sessionId;
-
-        if (!sessionId) {
-          toast.error("Payment session creation failed!");
-          return;
         }
+      );
 
-        const stripe = await stripePromise;
-        const { error } = await stripe.redirectToCheckout({
-          sessionId: sessionId,
-        });
+      toast.success("Booking confirmed! Processing payment...");
 
-        if (error) {
-          console.error("Stripe Checkout Error:", error);
-          toast.error("Payment redirection failed: " + error.message);
+      // 2. Create payment session
+      const paymentResponse = await axios.post(
+        `http://localhost:5000/api/auth/payment`,
+        {
+          amount: 0.5, // Should be dynamic based on service
+          serviceName: formData.selectedService
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      }
+      );
+
+      // 3. Redirect to Stripe
+      const stripe = await stripePromise;
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: paymentResponse.data.sessionId
+      });
+
+      if (error) throw error;
+
     } catch (err) {
-      console.error(
-        "Booking/payment failed:",
-        err.response?.data || err.message
-      );
-      toast.error(
-        "Booking/payment failed: " + (err.response?.data.message || err.message)
-      );
+      console.error("Booking error:", err);
+      const errorMsg = err.response?.data?.message || 
+                      err.response?.data?.error || 
+                      err.message || 
+                      "Booking failed";
+      toast.error(`Error: ${errorMsg}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -112,108 +150,113 @@ const Booking = () => {
   }, []);
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{ backgroundColor: pageBackground }}
-    >
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: pageBackground }}>
       <form
         id="bookingForm"
         onSubmit={handleSubmit}
-        className="bg-gray-100 shadow-2xl rounded-xl p-10 flex flex-col gap-6 w-full max-w-md border border-gray-300 transition-all duration-700 hover:shadow-2xl"
+        className="bg-white shadow-2xl rounded-xl p-8 flex flex-col gap-6 w-full max-w-md border border-gray-200"
       >
-        <h1 className="text-3xl font-extrabold text-center text-black mb-4 tracking-widest">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
           Book Your Service
         </h1>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-700">
-            Customer Name
-          </label>
-          <input
-            type="text"
-            value={customerName}
-            onChange={(e) => setCustomerName(e.target.value)}
-            className="w-full p-3 rounded-lg bg-white border-b-2 border-gray-400 focus:outline-none focus:border-black transition-all duration-500"
-            required
-          />
-        </div>
+        <div className="space-y-4">
+          {/* Customer Name */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Customer Name</label>
+            <input
+              type="text"
+              name="customerName"
+              value={formData.customerName}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent"
+              required
+            />
+          </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-700">Email</label>
-          <input
-            type="email"
-            value={email}
-            readOnly
-            className="w-full p-3 rounded-lg bg-white border-b-2 border-gray-400 focus:outline-none focus:border-black transition-all duration-500"
-          />
-        </div>
+          {/* Email */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              readOnly
+              className="w-full p-3 rounded-lg border border-gray-300 bg-gray-100"
+            />
+          </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-700">Address</label>
-          <textarea
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Enter your address"
-            className="w-full p-3 rounded-lg bg-white border-b-2 border-gray-400 focus:outline-none focus:border-black transition-all duration-500 resize-none h-[100px]"
-            required
-          />
-        </div>
+          {/* Address */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Address</label>
+            <textarea
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent h-24"
+              required
+            />
+          </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-700">
-            Select Date
-          </label>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full p-3 rounded-lg bg-white border-b-2 border-gray-400 focus:outline-none focus:border-black transition-all duration-500"
-            required
-          />
-        </div>
+          {/* Date and Time */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Date</label>
+              <input
+                type="date"
+                name="selectedDate"
+                value={formData.selectedDate}
+                onChange={handleChange}
+                className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent"
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Time</label>
+              <input
+                type="time"
+                name="selectedTime"
+                value={formData.selectedTime}
+                onChange={handleChange}
+                className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent"
+                required
+              />
+            </div>
+          </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-700">
-            Select Time
-          </label>
-          <input
-            type="time"
-            value={selectedTime}
-            onChange={(e) => setSelectedTime(e.target.value)}
-            className="w-full p-3 rounded-lg bg-white border-b-2 border-gray-400 focus:outline-none focus:border-black transition-all duration-500"
-            required
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-700">
-            Select Service
-          </label>
-          <select
-            value={selectedService}
-            onChange={(e) => setSelectedService(e.target.value)}
-            className="w-full p-3 rounded-lg bg-white border-b-2 border-gray-400 focus:outline-none focus:border-black transition-all duration-500"
-            required
-          >
-            <option value="">Select a Service</option>
-            <option value="Women Makeup">Women Makeup</option>
-            <option value="Mens Grooming">Mens Grooming</option>
-            <option value="Appliance Repair">Appliance Repair</option>
-            <option value="Cleaning">Cleaning</option>
-            <option value="Handymen">Handymen</option>
-            <option value="Painter">Painter</option>
-          </select>
+          {/* Service Selection */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Service</label>
+            <select
+              name="selectedService"
+              value={formData.selectedService}
+              onChange={handleChange}
+              className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent"
+              required
+            >
+              <option value="">Select a Service</option>
+              <option value="Women Makeup">Women Makeup</option>
+              <option value="Mens Grooming">Mens Grooming</option>
+              <option value="Appliance Repair">Appliance Repair</option>
+              <option value="Cleaning">Cleaning</option>
+              <option value="Handymen">Handymen</option>
+              <option value="Painter">Painter</option>
+            </select>
+          </div>
         </div>
 
         <button
           type="submit"
-          className="bg-black text-white py-3 rounded-lg hover:scale-[1.04] hover:bg-gray-900 transition-transform duration-500"
+          disabled={isLoading}
+          className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-colors ${
+            isLoading ? 'bg-gray-400' : 'bg-black hover:bg-gray-800'
+          }`}
         >
-          Confirm Booking
+          {isLoading ? 'Processing...' : 'Confirm Booking'}
         </button>
-
-        <ToastContainer />
       </form>
+
+      <ToastContainer position="bottom-right" autoClose={5000} />
     </div>
   );
 };

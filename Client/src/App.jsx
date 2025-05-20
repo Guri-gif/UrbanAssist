@@ -13,7 +13,6 @@ import Booking from "./Pages/Booking";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Success from "./Pages/Success";
 import Cancel from "./Pages/Cancel";
-import BookingData from "./Components/BookingData";
 
 function App() {
   useEffect(() => {
@@ -42,7 +41,6 @@ function App() {
           <Route path="/repairing" element={<Repairing />} />
           <Route path="/cleaning" element={<Cleaning />} />
           <Route path="/handymen" element={<Handymen />} />
-          <Route path="/bookingData" element={<BookingData/>}/>
           <Route path="/success" element={<Success />} />
           <Route path="/cancel" element={<Cancel />} />
 
