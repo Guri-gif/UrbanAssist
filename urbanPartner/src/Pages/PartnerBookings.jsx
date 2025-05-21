@@ -9,7 +9,7 @@ const PartnerBookings = ({ updateTotalBookings }) => {
   const fetchBookingData = useCallback(async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("urbanPartnerToken"); // Updated key
+      const token = localStorage.getItem("urbanPartnerToken");
 
       if (!token) {
         message.error("Please login first");
@@ -78,14 +78,13 @@ const PartnerBookings = ({ updateTotalBookings }) => {
   const handleBookingAction = async (bookingId, status) => {
     try {
       const token = localStorage.getItem("urbanPartnerToken");
-      const partnerId = localStorage.getItem("partnerId"); // Use this instead of serviceProviderId prop
+      const partnerId = localStorage.getItem("partnerId");
 
       if (!token || !partnerId) {
         message.error("Please login first");
         return;
       }
 
-      // For mock data
       if (bookingId.startsWith("mock-")) {
         const updated = bookingData.map((booking) =>
           booking._id === bookingId ? { ...booking, status } : booking
@@ -96,12 +95,11 @@ const PartnerBookings = ({ updateTotalBookings }) => {
         return;
       }
 
-      // For real data
       const response = await axios.put(
         `http://localhost:5000/api/auth/booking/${bookingId}/status`,
         {
           status,
-          serviceProviderId: partnerId, // Use the partnerId from localStorage
+          serviceProviderId: partnerId,
         },
         {
           headers: {
@@ -112,7 +110,6 @@ const PartnerBookings = ({ updateTotalBookings }) => {
       );
 
       if (response.data.success) {
-        // Refresh data after successful update
         await fetchBookingData();
         message.success(`Booking ${status} successfully`);
       }

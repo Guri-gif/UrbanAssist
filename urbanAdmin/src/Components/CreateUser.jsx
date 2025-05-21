@@ -86,7 +86,7 @@ const CreateUser = () => {
             <Select>
               <Option value="user">User</Option>
               <Option value="admin">Admin</Option>
-              <Option value="admin">Partner</Option>
+              <Option value="partner">Partner</Option>
             </Select>
           </Form.Item>
         </Form>
